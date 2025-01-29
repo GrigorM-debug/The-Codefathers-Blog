@@ -30,7 +30,10 @@ const postSchema = new Schema({
   bannnerImageUrl: {
     type: String,
     trim: true,
-    required: [true, postValidationConstants.bannerImageUrl.requiredErrorMessage],
+    required: [
+      true,
+      postValidationConstants.bannerImageUrl.requiredErrorMessage,
+    ],
     minlength: [
       postValidationConstants.bannerImageUrl.minLength,
       postValidationConstants.bannerImageUrl.lengthErrorMessage,
@@ -60,11 +63,11 @@ const postSchema = new Schema({
 });
 
 postSchema.pre("save", function (next) {
-  if(this.isModified("likes")) {
+  if (this.isModified("likes")) {
     this.likeCount = this.likes.length;
   }
 
-  if(this.isModified("comments")) {
+  if (this.isModified("comments")) {
     this.commentCount = this.comments.length;
   }
 
@@ -74,4 +77,3 @@ postSchema.pre("save", function (next) {
 const Post = model("Post", postSchema);
 
 export default Post;
-

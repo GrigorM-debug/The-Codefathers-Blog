@@ -3,8 +3,8 @@ import { commentValidationConstants } from "../validationConstants/comment.js";
 
 const commentSchema = new Schema({
   _id: SchemaTypes.ObjectId,
-  content: { 
-    type: String, 
+  content: {
+    type: String,
     required: [true, commentValidationConstants.content.requiredErrorMessage],
     minlength: [
       commentValidationConstants.content.minLength,
@@ -19,13 +19,15 @@ const commentSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  author: { 
-    type: SchemaTypes.ObjectId, 
-    ref: "User", required: true 
+  author: {
+    type: SchemaTypes.ObjectId,
+    ref: "User",
+    required: true,
   },
-  post: { 
-    type: SchemaTypes.ObjectId, 
-    ref: "Post", required: true 
+  post: {
+    type: SchemaTypes.ObjectId,
+    ref: "Post",
+    required: true,
   },
 });
 
