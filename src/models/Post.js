@@ -43,6 +43,7 @@ const postSchema = new Schema({
     required: true,
   },
   comments: [{ type: SchemaTypes.ObjectId, ref: "Comment" }],
+  likes: [{ type: SchemaTypes.ObjectId, ref: "Like" }],
 });
 
 const Post = model("Post", postSchema);
