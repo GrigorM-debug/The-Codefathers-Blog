@@ -11,6 +11,9 @@ const likeSchema = new Schema({
   },
 });
 
+//Ensures that a user can only like a post once
+likeSchema.index({ author: 1, post: 1 }, { unique: true });
+
 const Like = model("Like", likeSchema);
 
 export default Like;

@@ -3,6 +3,7 @@ import { postValidationConstants } from "../validationConstants/post.js";
 const postSchema = new Schema({
   title: {
     type: String,
+    trim: true,
     required: [true, postValidationConstants.title.requiredErrorMessage],
     minlength: [
       postValidationConstants.title.minLength,
@@ -15,6 +16,7 @@ const postSchema = new Schema({
   },
   content: {
     type: String,
+    trim: true,
     required: [true, postValidationConstants.content.requiredErrorMessage],
     minlength: [
       postValidationConstants.content.minLength,
@@ -27,6 +29,7 @@ const postSchema = new Schema({
   },
   bannnerImageUrl: {
     type: String,
+    trim: true,
     required: [true, postValidationConstants.bannerImageUrl.requiredErrorMessage],
     minlength: [
       postValidationConstants.bannerImageUrl.minLength,
@@ -43,9 +46,32 @@ const postSchema = new Schema({
     required: true,
   },
   comments: [{ type: SchemaTypes.ObjectId, ref: "Comment" }],
+  commentCount: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
   likes: [{ type: SchemaTypes.ObjectId, ref: "Like" }],
+  likeCount: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+});
+
+postSchema.pre("save", function (next) {
+  if(this.isModified("likes")) {
+    this.likeCount = this.likes.length;
+  }
+
+  if(this.isModified("comments")) {
+    this.commentCount = this.comments.length;
+  }
+
+  next();
 });
 
 const Post = model("Post", postSchema);
 
 export default Post;
+

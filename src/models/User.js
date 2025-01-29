@@ -5,6 +5,7 @@ const userSchema = new Schema({
   _id: SchemaTypes.ObjectId,
   username: {
     type: String,
+    trim: true,
     required: [true, userValidationConstants.username.requiredErrorMessage],
     minlength: [
       userValidationConstants.username.minLength,
@@ -18,6 +19,7 @@ const userSchema = new Schema({
   },
   email: {
     type: String,
+    trim: true,
     required: [true, userValidationConstants.email.requiredErrorMessage],
     minlength: [
       userValidationConstants.email.minLength,
