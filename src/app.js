@@ -11,8 +11,7 @@ async function start() {
   handlebarsConfig(app);
   await mongoDbConfig();
 
-  app.listen(appPort, () => 
-    console.log(`Server listening on port ${appPort}`));
+  app.listen(appPort, () => console.log(`Server listening on port ${appPort}`));
 }
 
 await start();
