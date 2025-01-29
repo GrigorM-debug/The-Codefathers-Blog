@@ -8,6 +8,6 @@ export default function expressConfig(app) {
   app.use(express.json());
   app.use(cookieParser(secret));
   app.use(express.urlencoded({ extended: true }));
-  app.use("/static", express.static("static"));
+  app.use(express.static('static'))
   app.use(auth());
 }
