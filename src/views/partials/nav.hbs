@@ -1,0 +1,64 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <!-- Left side -->
+    <div class="d-flex justify-content-between">
+      <img
+        src="/static/images/logo.png"
+        alt="Logo"
+        width="50"
+        height="40"
+        class="d-inline-block align-text-top"
+      />
+      <a class="navbar-brand fw-bold" href="/">The Codefathers Blog</a>
+    </div>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link fw-bold fs-5" aria-current="page" href="">Posts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-bold fs-5" href="#">In progress</a>
+        </li>
+      </ul>
+
+      {{! <!-- Center - Search form -->
+      <form class="d-flex mx-auto">
+        <input class="form-control" type="text" placeholder="Readonly input here…" readonly>
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form> }}
+
+      <!-- Right side - Write link -->
+      <ul class="navbar-nav">
+        <li class="nav-item m-2">
+          <a class="nav-link h5" href="#">
+            <i class="fas fa-pen"></i>
+            Write
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <img
+              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+              alt="Profile Pic"
+              width="50"
+              height="40"
+              class="d-inline-block align-text-top"
+              style="border-radius: 50%;"
+            />
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
