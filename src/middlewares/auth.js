@@ -11,7 +11,7 @@ export default function auth() {
     try {
       const decoded = verifyToken(token);
       req.user = decoded;
-      req.isAuthenticated = true;
+      res.locals.isAuthenticated = true;
       next();
     } catch (error) {
       res.clearCookie("token");
