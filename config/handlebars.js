@@ -6,6 +6,9 @@ import { dirname } from "path";
 export default function handlebarsConfig(app) {
   const hbs = handlebars.create({
     extname: "hbs",
+    helpers: {
+      eq: (a, b) => a === b,
+    },
   });
 
   const __dirname = dirname(fileURLToPath(import.meta.url));
