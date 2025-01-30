@@ -50,8 +50,6 @@ export const registerValidator = [
       max: userValidationConstants.imageUrl.maxLength,
     })
     .withMessage(userValidationConstants.imageUrl.lengthErrorMessage)
-    .matches(userValidationConstants.imageUrl.imageUrlRegex)
-    .withMessage(userValidationConstants.imageUrl.imageUrlErrorMessage),
 ];
 
 export const loginValidator = [
