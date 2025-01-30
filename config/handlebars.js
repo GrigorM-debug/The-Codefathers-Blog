@@ -5,7 +5,7 @@ import { dirname } from "path";
 
 export default function handlebarsConfig(app) {
   const hbs = handlebars.create({
-    extname: "hbs",
+    extname: ".hbs",
     helpers: {
       eq: (a, b) => a === b,
     },

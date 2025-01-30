@@ -1,5 +1,7 @@
 import { homeController } from "../src/controllers/home.js";
+import userRouter from "../src/controllers/user.js";
 
 export default function routes(app) {
-  app.use("/", homeController);
+  app.get("/", homeController);
+  app.use(userRouter);
 }
