@@ -2,7 +2,6 @@ import { model, Schema, SchemaTypes } from "mongoose";
 import { userValidationConstants } from "../validationConstants/user.js";
 
 const userSchema = new Schema({
-  _id: SchemaTypes.ObjectId,
   username: {
     type: String,
     trim: true,
@@ -38,14 +37,6 @@ const userSchema = new Schema({
   passwordHash: {
     type: String,
     required: [true, userValidationConstants.password.requiredErrorMessage],
-    minlength: [
-      userValidationConstants.password.minLength,
-      userValidationConstants.password.lengthErrorMessage,
-    ],
-    maxlength: [
-      userValidationConstants.password.maxLength,
-      userValidationConstants.password.lengthErrorMessage,
-    ],
   },
   createdAt: {
     type: Date,
@@ -62,10 +53,6 @@ const userSchema = new Schema({
     maxlength: [
       userValidationConstants.imageUrl.maxLength,
       userValidationConstants.imageUrl.lengthErrorMessage,
-    ],
-    match: [
-      userValidationConstants.imageUrl.imageUrlRegex,
-      userValidationConstants.imageUrl.imageUrlErrorMessage,
     ],
   },
 });
