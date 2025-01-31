@@ -8,7 +8,7 @@ export const userValidationConstants = {
   email: {
     minLength: 5,
     maxLength: 100,
-    lengthErrorMessage: "Email must be between 3 and 20 characters long !",
+    lengthErrorMessage: "Email must be between 5 and 100 characters long !",
     requiredErrorMessage: "Email is required !",
     emailRegex:
       /^([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+")@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
