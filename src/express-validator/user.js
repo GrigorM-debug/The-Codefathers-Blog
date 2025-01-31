@@ -49,7 +49,7 @@ export const registerValidator = [
       min: userValidationConstants.imageUrl.minLength,
       max: userValidationConstants.imageUrl.maxLength,
     })
-    .withMessage(userValidationConstants.imageUrl.lengthErrorMessage)
+    .withMessage(userValidationConstants.imageUrl.lengthErrorMessage),
 ];
 
 export const loginValidator = [

@@ -39,23 +39,27 @@ export async function register(userData) {
 }
 
 export async function login(userData) {
-  const user = await User.findOne({ username: userData.username, email: userData.email })
+  const user = await User.findOne({
+    username: userData.username,
+    email: userData.email,
+  });
 
   if (user) {
     const isMatch = await bcrypt.compare(userData.password, user.passwordHash);
-      if (!isMatch) {
-        throw new Error("Invalid password");
-      }
 
-      const payload = {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-      };
+    if (!isMatch) {
+      throw new Error("Invalid password");
+    }
 
-      const token = generateToken(payload);
+    const payload = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+    };
 
-      return token;
+    const token = generateToken(payload);
+
+    return token;
   } else {
     throw new Error("User not found");
   }
