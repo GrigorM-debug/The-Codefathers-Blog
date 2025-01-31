@@ -14,11 +14,11 @@ export default async function sendEmail(contactFormData) {
   });
 
   const message = new Message({
-    text: contactFormData.message,
     from: `${contactFormData.user_email} <${user}>`,
     to: user,
     subject: contactFormData.subject,
     replyTo: contactFormData.user_email,
+    text: `From: ${contactFormData.user_name} <${contactFormData.user_email}> \n\n${contactFormData.message}`,
   });
 
   await client.sendAsync(message);
