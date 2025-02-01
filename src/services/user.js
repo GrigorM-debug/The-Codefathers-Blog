@@ -66,3 +66,31 @@ export async function login(userData) {
     throw new Error("User not found");
   }
 }
+
+export async function changePassword(userData) {
+  const userExist = await User.findOne({ username: userData.username });
+
+  if (!userExist) {
+    throw new Error("User not found");
+  }
+
+  if (userData.newPassword !== userData.newPasswordRepeat) {
+    throw new Error("Passwords do not match");
+  }
+
+  const isMatch = await bcrypt.compare(
+    userData.newPassword,
+    userExist.passwordHash
+  );
+
+  if (isMatch) {
+    throw new Error("New password must be different from the old one");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const newPasswordHash = await bcrypt.hash(userData.newPassword, salt);
+
+  userExist.passwordHash = newPasswordHash;
+
+  await userExist.save();
+}
