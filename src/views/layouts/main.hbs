@@ -13,6 +13,11 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
     </script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/jodit@4.0.1/es2021/jodit.min.css"
+    />
+    <script src="https://unpkg.com/jodit@4.0.1/es2021/jodit.min.js"></script>
   </head>
   <body>
     <div class="d-flex flex-column min-vh-100">
@@ -68,6 +73,16 @@
         toastElements.forEach((toastEl) => {
           new bootstrap.Toast(toastEl).show();
         });
+      });
+      
+      const editor = Jodit.make("#editor", {
+        readonly: false,
+        height: 400,
+        toolbarButtonSize: 'middle',
+        uploader: {
+          insertImageAsBase64URI: true,
+        },
+        buttons: [...Jodit.defaultOptions.buttons]
       });
     </script>
 </html>
