@@ -13,6 +13,9 @@ export default function auth() {
       req.user = decoded;
       res.locals.isAuthenticated = true;
       res.locals.username = decoded.username;
+      res.locals.imageUrl = decoded.imageUrl;
+
+      console.log(decoded);
       next();
     } catch (error) {
       res.clearCookie("token");
