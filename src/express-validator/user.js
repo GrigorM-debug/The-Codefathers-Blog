@@ -80,3 +80,39 @@ export const loginValidator = [
     })
     .withMessage(userValidationConstants.password.lengthErrorMessage),
 ];
+
+export const changePasswordValidator = [
+  body("username")
+    .trim()
+    .notEmpty()
+    .withMessage(userValidationConstants.username.requiredErrorMessage)
+    .isLength({
+      min: userValidationConstants.username.minLength,
+      max: userValidationConstants.username.maxLength,
+    })
+    .withMessage(userValidationConstants.username.lengthErrorMessage),
+
+  body("newPassword")
+    .trim()
+    .notEmpty()
+    .withMessage(userValidationConstants.password.requiredErrorMessage)
+    .isLength({
+      min: userValidationConstants.password.minLength,
+      max: userValidationConstants.password.maxLength,
+    })
+    .withMessage(userValidationConstants.password.lengthErrorMessage),
+
+  body("newPasswordRepeat")
+    .trim()
+    .notEmpty()
+    .withMessage(userValidationConstants.password.requiredErrorMessage)
+    .isLength({
+      min: userValidationConstants.password.minLength,
+      max: userValidationConstants.password.maxLength,
+    })
+    .withMessage(userValidationConstants.password.lengthErrorMessage)
+    .custom((value, { req }) => {
+      return value === req.body.newPassword;
+    })
+    .withMessage("Passwords do not match !"),
+];
