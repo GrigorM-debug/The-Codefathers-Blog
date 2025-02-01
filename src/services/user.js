@@ -31,6 +31,7 @@ export async function register(userData) {
     _id: user._id,
     username: user.username,
     email: user.email,
+    imageUrl: user.imageUrl,
   };
 
   const token = generateToken(payload);
@@ -55,6 +56,7 @@ export async function login(userData) {
       _id: user._id,
       username: user.username,
       email: user.email,
+      imageUrl: user.imageUrl,
     };
 
     const token = generateToken(payload);
