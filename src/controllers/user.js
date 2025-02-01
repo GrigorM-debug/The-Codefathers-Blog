@@ -31,7 +31,6 @@ userRouter.post("/register", isGuest(), registerValidator, async (req, res) => {
     });
     res.redirect("/");
   } catch (error) {
-    console.log(error);
     res.render("register", {
       errors: [{ msg: error.message }],
       data: req.body,
@@ -60,7 +59,6 @@ userRouter.post("/login", isGuest(), loginValidator, async (req, res) => {
     });
     res.redirect("/");
   } catch (error) {
-    console.log(error);
     res.render("login", { errors: [{ msg: error.message }], data: req.body });
     return;
   }
@@ -95,7 +93,6 @@ userRouter.post(
         msg: "Password changed successfully!",
       });
     } catch (error) {
-      console.log(error);
       res.render("changing-password", {
         errors: [{ msg: error.message }],
         data: req.body,

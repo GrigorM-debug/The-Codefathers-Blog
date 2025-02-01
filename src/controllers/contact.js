@@ -20,7 +20,6 @@ contactRouter.post("/contact", contactValidator, async (req, res) => {
     await sendEmail(req.body);
     res.render("contact", { success: true, msg: "Email sent successfully !" });
   } catch (error) {
-    console.log(error);
     res.render("contact", {
       errors: [{ msg: error }],
       data: req.body,
