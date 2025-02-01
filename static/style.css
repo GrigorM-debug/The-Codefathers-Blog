@@ -125,11 +125,29 @@ img {
   background: #218838;
   color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
-
 
 /* Add some spacing above the button */
 .contact .col-md-12.text-center {
   margin-top: 20px;
+}
+
+/* Create post */
+.create-post-container input:focus,
+.create-post-container textarea:focus {
+  background: #fff;
+  border: 2px solid #28a745;
+  color: #232434;
+  -webkit-box-shadow: 0 0 5px rgba(40, 167, 69, 0.2);
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.2);
+  outline: 0 none;
+}
+
+.create-post-container label {
+  font-weight: 600;
+  color: #232434;
+  font-family: "poppins", sans-serif;
+  font-size: 1.5em;
+  margin-bottom: 5px;
 }

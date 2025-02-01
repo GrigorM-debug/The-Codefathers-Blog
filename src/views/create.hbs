@@ -1,0 +1,36 @@
+<div class="container create-post-container">
+  <div class="section-title text-center">
+    <h1 class="mt-2">Create Post</h1>
+  </div>
+  <form action="/create" method="post">
+    <div class="form-group">
+      <label for="title" class="fw-bold fs-5 mb-2">Post Title</label>
+      <input
+        type="text"
+        class="form-control"
+        id="title"
+        name="title"
+        value="{{data.title}}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="editor" class="fs-5 fw-bold mb-2">Content</label>
+      <textarea
+        class="form-control"
+        id="editor"
+        rows="20"
+        name="content"
+      >{{data.content}}</textarea>
+    </div>
+
+    <div class="col-md-12 text-center">
+      <button
+        type="submit"
+        value="Create Post"
+        name="submit"
+        id="submitButton"
+        class="submit-btn"
+      >Create Post</button>
+    </div>
+  </form>
+</div>
