@@ -10,9 +10,28 @@
         class="form-control"
         id="title"
         name="title"
+        required="true"
+        minlength="3"
+        maxlength="50"
         value="{{data.title}}"
       />
     </div>
+
+    <div class="form-group">
+      <label for="title" class="fw-bold fs-5 mb-2">Banner Image Url</label>
+      <input
+        type="text"
+        class="form-control"
+        id="bannerImageUrl"
+        name="bannerImageUrl"
+        required="true"
+        minlength="3"
+        maxlength="5000"
+        pattern="/^https?:\/\/(?:[\w-]+\.)+[\w-]+(?:\/[\w-.\/?%&=]*)?\.(?:jpg|jpeg|png|gif|webp)(?:\?[\w=&]*)?$/i,"
+        value="{{data.bannerImageUrl}}"
+      />
+    </div>
+
     <div class="form-group">
       <label for="editor" class="fs-5 fw-bold mb-2">Content</label>
       <textarea
@@ -20,17 +39,13 @@
         id="editor"
         rows="20"
         name="content"
+        required="true"
+        minlength="200"
       >{{data.content}}</textarea>
     </div>
 
     <div class="col-md-12 text-center">
-      <button
-        type="submit"
-        value="Create Post"
-        name="submit"
-        id="submitButton"
-        class="submit-btn"
-      >Create Post</button>
+      <button type="submit" id="submitButton" class="submit-btn">Create Post</button>
     </div>
   </form>
 </div>

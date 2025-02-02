@@ -15,7 +15,6 @@ export default function auth() {
       res.locals.username = decoded.username;
       res.locals.imageUrl = decoded.imageUrl;
 
-      console.log(decoded);
       next();
     } catch (error) {
       res.clearCookie("token");

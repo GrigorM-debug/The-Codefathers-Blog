@@ -1,5 +1,6 @@
 import { Schema, SchemaTypes, model } from "mongoose";
 import { postValidationConstants } from "../validationConstants/post.js";
+
 const postSchema = new Schema({
   title: {
     type: String,
