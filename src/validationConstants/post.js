@@ -1,9 +1,9 @@
 export const postValidationConstants = {
   title: {
     minLength: 3,
-    maxLength: 20,
+    maxLength: 50,
     requiredErrorMessage: "Title is required !",
-    lengthErrorMessage: "Title must be between 3 and 20 characters long !",
+    lengthErrorMessage: "Title must be between 3 and 50 characters long !",
   },
   content: {
     minLength: 200,
