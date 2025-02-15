@@ -21,10 +21,8 @@ postRouter.get("/post/details/:_id", async (req, res) => {
     const post = await getPostById(req.params._id);
     const authorPosts = await getAllPostsByUserId(post.author._id);
 
-    Promise.all([post, authorPosts]).then(([post, authorPots]) => {
-      const isUserPostCreater = req.user && req.user._id == post.author._id;
-      res.render("post/details", { post, authorPosts, isUserPostCreater });
-    });
+    const isUserPostCreater = req.user && req.user._id == post.author._id;
+    res.render("post/details", { post, authorPosts, isUserPostCreater });
   } catch (err) {
     res.render("404", {
       errors: [{ msg: err.message }],
