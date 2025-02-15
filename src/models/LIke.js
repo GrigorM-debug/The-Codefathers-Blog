@@ -1,6 +1,7 @@
 import { Schema, SchemaTypes, model } from "mongoose";
 
 const likeSchema = new Schema({
+  _id: SchemaTypes.ObjectId,
   author: {
     type: SchemaTypes.ObjectId,
     ref: "User",
@@ -13,7 +14,6 @@ const likeSchema = new Schema({
   },
 });
 
-//Ensures that a user can only like a post once
 likeSchema.index({ author: 1, post: 1 }, { unique: true });
 
 const Like = model("Like", likeSchema);
