@@ -5,6 +5,10 @@ import { validationResult } from "express-validator";
 
 const postRouter = Router();
 
+postRouter.get("/details/:postId", (req, res) => {
+  res.render("details");
+});
+
 postRouter.get("/create", isAuthenticated(), (req, res) => {
   res.render("create");
 });
