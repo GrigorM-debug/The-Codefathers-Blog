@@ -53,89 +53,20 @@
           </div>
         </article>
         <!-- Comment Section -->
+        {{> post.comments}}
         <!-- Comment Section End -->
         {{! Leave comment section }}
-        <div class="contact-form article-comment">
-          <h4>Leave a Reply</h4>
-          <form id="contact-form" method="POST">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label for="editor" class="fs-5 fw-bold mb-2"></label>
-                  <textarea
-                    name="message"
-                    id="editor"
-                    placeholder="Your message *"
-                    rows="10"
-                    class="form-control"
-                  ></textarea>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="send">
-                  <button class="px-btn theme"><span>Submit</span>
-                    <i class="arrow"></i></button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
+        {{#if isAuthenticated}}
+          {{> leave_comment this.post._id}}
+        {{/if}}
         {{! End Leave comment section }}
       </div>
       <div class="col-lg-4 m-15px-tb blog-aside">
         <!-- Author -->
-        <div class="widget widget-author">
-          <div class="widget-title">
-            <h3>Author</h3>
-          </div>
-          <div class="widget-body align-items-center">
-            <div class="media">
-              <div class="avatar">
-                <img src={{post.author.imageUrl}} alt="Author profile pic" />
-              </div>
-              <div class="media-body">
-                <h6>Hello, I'm {{post.author.username}}</h6>
-              </div>
-            </div>
-            <p><strong>Joined:</strong> {{post.author.createdAt}}</p>
-            <p><strong>Description:</strong> {{post.author.description}}</p>
-          </div>
-        </div>
+        {{> author_section post.author}}
         <!-- End Author -->
         <!-- Author Latest Post -->
-        <div class="widget widget-latest-post">
-          <div class="widget-title">
-            <h3>Author Latest Post</h3>
-          </div>
-          <div class="widget-body">
-            {{#each authorPosts}}
-            <div class="latest-post-aside media">
-              <div class="lpa-left media-body">
-                <div class="lpa-title">
-                  <h5><a href="/post/details/{{this._id}}">{{this.title}}</a></h5>
-                </div>
-                <div class="lpa-meta">
-                  <a class="name" href="">
-                    {{this.author.username}}
-                  </a>
-                  <a class="date" href="">
-                    {{this.createdAt}}
-                  </a>
-                </div>
-              </div>
-              <div class="lpa-right">
-                <a href="#">
-                  <img
-                    src="{{this.bannnerImageUrl}}"
-                    alt="Post banner image"
-                  />
-                </a>
-              </div>
-            </div>
-            {{/each}}
-            </div>
-          </div>
-        </div>
+        {{> author_posts this}}
         <!-- End Latest Post -->
       </div>
     </div>

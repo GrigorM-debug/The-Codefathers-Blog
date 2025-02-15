@@ -1,0 +1,33 @@
+<div class="widget widget-latest-post">
+    <div class="widget-title">
+    <h3>Author Latest Post</h3>
+    </div>
+    <div class="widget-body">
+    {{#each authorPosts}}
+    <div class="latest-post-aside media">
+        <div class="lpa-left media-body">
+        <div class="lpa-title">
+            <h5><a href="/post/details/{{this._id}}">{{this.title}}</a></h5>
+        </div>
+        <div class="lpa-meta">
+            <a class="name" href="">
+            {{this.author.username}}
+            </a>
+            <a class="date" href="">
+            {{this.createdAt}}
+            </a>
+        </div>
+        </div>
+        <div class="lpa-right">
+        <a href="#">
+            <img
+            src="{{this.bannnerImageUrl}}"
+            alt="Post banner image"
+            />
+        </a>
+        </div>
+    </div>
+    {{/each}}
+    </div>
+    </div>
+</div>
