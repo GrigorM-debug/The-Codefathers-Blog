@@ -21,6 +21,7 @@ export const postValidator = [
   body("bannerImageUrl")
     .trim()
     .notEmpty()
+    .isString()
     .withMessage(postValidationConstants.bannerImageUrl.requiredErrorMessage)
     .isLength({
       min: postValidationConstants.bannerImageUrl.minLength,
