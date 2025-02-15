@@ -1,0 +1,109 @@
+/* Contact Us */
+.contact-area {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  margin-top: 2em;
+}
+
+@media only screen and (max-width: 768px) {
+  .contact {
+    margin-bottom: 60px;
+  }
+}
+
+.contact input {
+  background: #fff;
+  border: 2px solid #333;
+  border-radius: 5px;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  color: #232434;
+  font-size: 16px;
+  height: 65px;
+  padding: 12px;
+  width: 100%;
+  font-family: "poppins", sans-serif;
+  padding-left: 20px;
+  -webkit-transition: all 0.3s ease 0s;
+  -o-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  margin-top: 8px;
+}
+
+.contact textarea {
+  background: #fff;
+  border: 2px solid #333;
+  border-radius: 5px;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  color: #232434;
+  font-size: 16px;
+  padding: 12px;
+  width: 100%;
+  font-family: "poppins", sans-serif;
+  padding-left: 20px;
+  -webkit-transition: all 0.3s ease 0s;
+  -o-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  margin-top: 8px;
+}
+
+.contact input:focus,
+.contact textarea:focus {
+  background: #fff;
+  border: 2px solid #28a745;
+  color: #232434;
+  -webkit-box-shadow: 0 0 5px rgba(40, 167, 69, 0.2);
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.2);
+  outline: 0 none;
+}
+
+.contact label {
+  font-weight: 600;
+  color: #232434;
+  font-family: "poppins", sans-serif;
+  font-size: 1.5em;
+  margin-bottom: 5px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-control::placeholder {
+  color: #232434;
+  opacity: 1;
+}
+
+.submit-btn {
+  border-radius: 30px;
+  color: #fff;
+  outline: medium none !important;
+  padding: 15px 27px;
+  text-transform: capitalize;
+  -webkit-transition: all 0.3s ease 0s;
+  -o-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  background: #28a745;
+  font-family: "poppins", sans-serif;
+  cursor: pointer;
+  width: auto;
+  min-width: 200px;
+  border: none;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.submit-btn:hover,
+.submit-btn:focus {
+  background: #218838;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Add some spacing above the button */
+.contact .col-md-12.text-center {
+  margin-top: 20px;
+}
