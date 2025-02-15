@@ -29,4 +29,15 @@ export async function gellAllPosts() {
   return posts;
 }
 
-export async function getPostById(postId) {}
+export async function getPostById(postId) {
+  const post = await Post.findById(postId).populate("author").lean();
+
+  if (!post) {
+    throw new Error("Post does not exist");
+  }
+
+  post.createdAt = post.createdAt.toLocaleString();
+  post.author.createdAt = post.author.createdAt.toLocaleString();
+
+  return post;
+}

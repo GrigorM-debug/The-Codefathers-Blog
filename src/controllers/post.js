@@ -2,7 +2,7 @@ import { Router } from "express";
 import { isAuthenticated } from "../middlewares/guards.js";
 import { postValidator } from "../express-validator/post.js";
 import { validationResult } from "express-validator";
-import { createPost, gellAllPosts } from "../services/post.js";
+import { createPost, gellAllPosts, getPostById } from "../services/post.js";
 
 const postRouter = Router();
 
@@ -11,8 +11,16 @@ postRouter.get("/posts", async (req, res) => {
   res.render("post/catalog", { posts });
 });
 
-postRouter.get("post/details/:postId", (req, res) => {
-  res.render("post/details");
+postRouter.get("/post/details/:_id", async (req, res) => {
+  try {
+    const post = await getPostById(req.params._id);
+    const isUserPostCreater = req.user && req.user._id == post.author._id;
+    res.render("post/details", { post, isUserPostCreater });
+  } catch (err) {
+    res.render("post/catalog", {
+      errors: [{ msg: err.message }],
+    });
+  }
 });
 
 postRouter.get("/create", isAuthenticated(), (req, res) => {
