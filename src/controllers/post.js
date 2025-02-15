@@ -26,7 +26,7 @@ postRouter.get("/post/details/:_id", async (req, res) => {
       res.render("post/details", { post, authorPosts, isUserPostCreater });
     });
   } catch (err) {
-    res.render("post/catalog", {
+    res.render("404", {
       errors: [{ msg: err.message }],
     });
   }

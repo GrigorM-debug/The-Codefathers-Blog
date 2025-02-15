@@ -8,4 +8,5 @@ export default function routes(app) {
   app.use(contactRouter);
   app.use(userRouter);
   app.use(postRouter);
+  app.get("/404", (req, res) => res.render("404"));
 }
