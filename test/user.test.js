@@ -12,6 +12,7 @@ const user1 = {
   email: "ivan@abv.bg",
   password: "12345678",
   imageUrl: "https://example.com/image.jpg",
+  description: "Developer from New York. Working in Apple",
 };
 
 const user2 = {
@@ -19,6 +20,7 @@ const user2 = {
   email: "georgi@gmail.com",
   password: "12345678910",
   imageUrl: "https://example.com/image.jpg",
+  description: "C++ developer from United States with 20 years of experience",
 };
 
 describe("User service unit tests", () => {
@@ -43,6 +45,7 @@ describe("User service unit tests", () => {
       email: "grigor@abv.bg",
       password: "123456789",
       imageUrl: "https://example.com/image.jpg",
+      description: "I am the best developer in the world",
     };
 
     const token = await register(userData);
@@ -61,6 +64,9 @@ describe("User service unit tests", () => {
     expect(createdUser)
       .to.has.property("imageUrl")
       .to.be.equal(userData.imageUrl);
+    expect(createdUser)
+      .to.has.property("description")
+      .to.be.equal(userData.description);
   });
 
   it("Register: Should throw exception if user already exists", async () => {
@@ -83,6 +89,7 @@ describe("User service unit tests", () => {
       email: "debeliq@abv.bg",
       password: "123456789",
       imageUrl: "https://example.com/image.jpg",
+      description: "I am the best developer in the world",
     };
 
     try {
@@ -98,6 +105,7 @@ describe("User service unit tests", () => {
       email: "georgi@gmail.com",
       password: "123213123123",
       imageUrl: "https://example.com/image.jpg",
+      description: "I am the best developer in the world",
     };
 
     try {
@@ -113,6 +121,7 @@ describe("User service unit tests", () => {
       email: "anonymous@gmail.com",
       newPassword: "123456789",
       imageUrl: "https://example.com/image.jpg",
+      description: "I am the best developer in the world",
     };
 
     try {
