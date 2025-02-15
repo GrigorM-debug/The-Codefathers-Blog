@@ -1,0 +1,144 @@
+<div class="blog-single gray-bg">
+  <div class="container">
+    <div class="row align-items-start">
+      <div class="col-lg-8 m-15px-tb">
+        <article class="article">
+          <div class="article-img">
+            <img src={{post.bannnerImageUrl}} alt="Post banner image" />
+          </div>
+          <div class="article-title">
+            <h2>{{post.title}}</h2>
+            <div class="media">
+              <div class="media-body">
+                <div class="avatar">
+                  <img src={{post.author.imageUrl}} alt="Aythor profile pic" />
+                </div>
+                <div>
+                  <label>{{post.author.username}}</label>
+                  <span>{{post.createdAt}}</span>
+                  <ul class="statistic">
+                    <li>
+                      <a href="" class="text-dark text-decoration-none"><i
+                          class="fa-solid fa-comment"
+                        ></i>
+                        {{post.commentCount}}
+                      </a>
+                    </li>
+                    <li>
+                      <a href="" class="text-dark text-decoration-none"><i
+                          class="fa-solid fa-thumbs-up"
+                        ></i>
+                        {{post.likeCount}}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              {{#if isUserPostCreater}}
+                <div class="author-action">
+                  <a
+                    href="/post/edit/:{{post._id}}"
+                    class="btn btn-success"
+                  >Edit</a>
+                  <a
+                    href="/post/delete/:{{post._id}}"
+                    class="btn btn-danger"
+                  >Delete</a>
+                </div>
+              {{/if}}
+            </div>
+          </div>
+          <div class="article-content">
+            <p class="htmlcode">{{{post.content}}}</p>
+          </div>
+        </article>
+        <!-- Comment Section -->
+        <!-- Comment Section End -->
+        {{! Leave comment section }}
+        <div class="contact-form article-comment">
+          <h4>Leave a Reply</h4>
+          <form id="contact-form" method="POST">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="editor" class="fs-5 fw-bold mb-2"></label>
+                  <textarea
+                    name="message"
+                    id="editor"
+                    placeholder="Your message *"
+                    rows="10"
+                    class="form-control"
+                  ></textarea>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="send">
+                  <button class="px-btn theme"><span>Submit</span>
+                    <i class="arrow"></i></button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        {{! End Leave comment section }}
+      </div>
+      <div class="col-lg-4 m-15px-tb blog-aside">
+        <!-- Author -->
+        <div class="widget widget-author">
+          <div class="widget-title">
+            <h3>Author</h3>
+          </div>
+          <div class="widget-body align-items-center">
+            <div class="media">
+              <div class="avatar">
+                <img src={{post.author.imageUrl}} alt="Author profile pic" />
+              </div>
+              <div class="media-body">
+                <h6>Hello, I'm {{post.author.username}}</h6>
+              </div>
+            </div>
+            <p><strong>Joined:</strong> {{post.author.createdAt}}</p>
+            <p><strong>Description:</strong> {{post.author.description}}</p>
+          </div>
+        </div>
+        <!-- End Author -->
+        <!-- Author Latest Post -->
+        <div class="widget widget-latest-post">
+          <div class="widget-title">
+            <h3>Author Latest Post</h3>
+          </div>
+          <div class="widget-body">
+            
+            <div class="latest-post-aside media">
+              <div class="lpa-left media-body">
+                <div class="lpa-title">
+                  <h5><a href="#">Prevent 75% of visitors from google analytics</a></h5>
+                </div>
+                <div class="lpa-meta">
+                  <a class="name" href="#">
+                    Rachel Roth
+                  </a>
+                  <a class="date" href="#">
+                    26 FEB 2020
+                  </a>
+                </div>
+              </div>
+              <div class="lpa-right">
+                <a href="#">
+                  <img
+                    src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
+                    title=""
+                    alt=""
+                  />
+                </a>
+              </div>
+            </div>
+          
+            </div>
+          </div>
+        </div>
+        <!-- End Latest Post -->
+      </div>
+    </div>
+  </div>
+</div>
