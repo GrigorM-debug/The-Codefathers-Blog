@@ -53,11 +53,11 @@
           </div>
         </article>
         <!-- Comment Section -->
-        {{> post.comments}}
+        {{> comments_section post}}
         <!-- Comment Section End -->
         {{! Leave comment section }}
         {{#if isAuthenticated}}
-          {{> leave_comment this.post._id}}
+          {{> leave_comment post._id}}
         {{/if}}
         {{! End Leave comment section }}
       </div>

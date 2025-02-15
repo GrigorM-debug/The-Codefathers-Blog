@@ -1,4 +1,5 @@
 import Post from "../models/Post.js";
+import Comment from "../models/Comment.js";
 
 export async function createPost(postData, userId) {
   const postAlreadyExists = await Post.findOne({ title: postData.title });
@@ -30,7 +31,18 @@ export async function gellAllPosts() {
 }
 
 export async function getPostById(postId) {
-  const post = await Post.findById(postId).populate("author").lean();
+  const post = await Post.findById(postId)
+    .populate("author")
+    .populate({
+      path: "comments",
+      populate: {
+        path: "author",
+        model: "User",
+      },
+    })
+    .lean();
+
+  console.log(post);
 
   if (!post) {
     throw new Error("Post does not exist");
