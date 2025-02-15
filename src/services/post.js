@@ -41,3 +41,15 @@ export async function getPostById(postId) {
 
   return post;
 }
+
+export async function getAllPostsByUserId(userId) {
+  const userPosts = await Post.find({ author: userId })
+    .sort({ createdAt: "descending" })
+    .lean();
+
+  userPosts.forEach((post) => {
+    post.createdAt = post.createdAt.toLocaleString();
+  });
+
+  return userPosts;
+}

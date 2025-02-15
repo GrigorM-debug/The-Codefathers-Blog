@@ -2,7 +2,12 @@ import { Router } from "express";
 import { isAuthenticated } from "../middlewares/guards.js";
 import { postValidator } from "../express-validator/post.js";
 import { validationResult } from "express-validator";
-import { createPost, gellAllPosts, getPostById } from "../services/post.js";
+import {
+  createPost,
+  gellAllPosts,
+  getPostById,
+  getAllPostsByUserId,
+} from "../services/post.js";
 
 const postRouter = Router();
 
@@ -14,8 +19,12 @@ postRouter.get("/posts", async (req, res) => {
 postRouter.get("/post/details/:_id", async (req, res) => {
   try {
     const post = await getPostById(req.params._id);
-    const isUserPostCreater = req.user && req.user._id == post.author._id;
-    res.render("post/details", { post, isUserPostCreater });
+    const authorPosts = await getAllPostsByUserId(post.author._id);
+
+    Promise.all([post, authorPosts]).then(([post, authorPots]) => {
+      const isUserPostCreater = req.user && req.user._id == post.author._id;
+      res.render("post/details", { post, authorPosts, isUserPostCreater });
+    });
   } catch (err) {
     res.render("post/catalog", {
       errors: [{ msg: err.message }],
@@ -43,7 +52,7 @@ postRouter.post(
 
     try {
       const postId = await createPost(req.body, req.user._id);
-      res.render(`/post/details/${postId}`, {
+      res.render(`post/details/${postId}`, {
         success: true,
         msg: "Post created successfully",
       });
