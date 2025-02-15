@@ -1,16 +1,18 @@
 <div class="contact-form article-comment">
   <h4>Leave a Reply</h4>
-  <form id="contact-form" method="POST">
+  <form id="contact-form" method="POST" action="/leave-comment/:{{this}}">
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
           <label for="editor" class="fs-5 fw-bold mb-2"></label>
           <textarea
-            name="message"
+            name="content"
             id="editor"
             placeholder="Your message *"
             rows="10"
             class="form-control"
+            required="true"
+            minlength="100"
           ></textarea>
         </div>
       </div>
