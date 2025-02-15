@@ -22,6 +22,7 @@ export async function register(userData) {
     email: userData.email,
     passwordHash: await bcrypt.hash(userData.password, salt),
     imageUrl: userData.imageUrl,
+    description: userData.description,
   });
 
   //Save user

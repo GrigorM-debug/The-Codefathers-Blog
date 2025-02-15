@@ -50,6 +50,16 @@ export const registerValidator = [
       max: userValidationConstants.imageUrl.maxLength,
     })
     .withMessage(userValidationConstants.imageUrl.lengthErrorMessage),
+  body("description")
+    .trim()
+    .notEmpty()
+    .isString()
+    .withMessage(userValidationConstants.description.requiredErrorMessage)
+    .isLength({
+      min: userValidationConstants.description.minLength,
+      max: userValidationConstants.description.maxLength,
+    })
+    .withMessage(userValidationConstants.description.lengthErrorMessage),
 ];
 
 export const loginValidator = [

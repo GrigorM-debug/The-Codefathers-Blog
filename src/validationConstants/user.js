@@ -30,4 +30,11 @@ export const userValidationConstants = {
       /(http[s]?:\/\/.*\.(?:png|jpg|gif|svg|jpeg))/i,8*/
     imageUrlErrorMessage: "Image URL must be a valid image URL !",
   },
+  description: {
+    minLength: 10,
+    maxLength: 200,
+    requiredErrorMessage: "Description is required !",
+    lengthErrorMessage:
+      "Description must be between 10 and 200 characters long !",
+  },
 };

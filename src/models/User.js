@@ -55,6 +55,19 @@ const userSchema = new Schema({
       userValidationConstants.imageUrl.lengthErrorMessage,
     ],
   },
+  description: {
+    type: String,
+    default: "",
+    required: [true, userValidationConstants.description.requiredErrorMessage],
+    minlength: [
+      userValidationConstants.description.minLength,
+      userValidationConstants.description.lengthErrorMessage,
+    ],
+    maxlength: [
+      userValidationConstants.description.maxLength,
+      userValidationConstants.description.lengthErrorMessage,
+    ],
+  },
 });
 
 const User = model("User", userSchema);
