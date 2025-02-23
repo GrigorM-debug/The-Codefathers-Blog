@@ -7,6 +7,7 @@ import {
   userExists,
   isPasswordValid,
   newPasswordIsDifferentFromTheOldPassword,
+  userExistByUsername,
 } from "../services/user.js";
 import {
   registerValidator,
@@ -39,9 +40,9 @@ userRouter.post(
         email: req.body.email,
       };
 
-      const userExists = await userExists(userData);
+      const isUserExisting = await userExists(userData);
 
-      if (!userExists) {
+      if (isUserExisting) {
         return res.render("register", {
           errors: [{ msg: "User already exists" }],
           data: req.body,
@@ -135,13 +136,7 @@ userRouter.post(
     }
 
     try {
-      const userData = {
-        username: req.body.username,
-        email: req.body.email,
-        newPassword: req.body.newPassword,
-      };
-
-      const userExist = await userExists(userData);
+      const userExist = await userExistByUsername(req.body.username);
 
       if (!userExist) {
         return res.render("changing-password", {
@@ -151,7 +146,7 @@ userRouter.post(
       }
 
       const isNewPasswordTheSameAsTheOldOne =
-        await newPasswordIsDifferentFromTheOldPassword(userData);
+        await newPasswordIsDifferentFromTheOldPassword(req.body);
 
       if (isNewPasswordTheSameAsTheOldOne) {
         return res.render("changing-password", {

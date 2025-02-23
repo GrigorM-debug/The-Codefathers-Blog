@@ -15,7 +15,19 @@ export async function userExists(userData) {
   return true;
 }
 
-export async function register(username, email) {
+export async function userExistByUsername(username) {
+  const user = await User.findOne({
+    username: username,
+  });
+
+  if (!user) {
+    return false;
+  }
+
+  return true;
+}
+
+export async function register(userData) {
   //Hash password
   const salt = await bcrypt.genSalt(10);
 
@@ -49,12 +61,9 @@ export async function isPasswordValid(userData) {
     email: userData.email,
   });
 
-  const isPasswordValid = await bcrypt.compare(
-    userData.password,
-    user.passwordHash
-  );
+  const isValid = await bcrypt.compare(userData.password, user.passwordHash);
 
-  return isPasswordValid;
+  return isValid;
 }
 
 export async function login(userData) {
