@@ -139,32 +139,28 @@ postRouter.post(
   }
 );
 
-postRouter.get(
-  "/post/delete/:id",
-  isAuthenticated(),
-  async (req, res, next) => {
-    try {
-      const { id } = req.params;
+postRouter.get("/post/edit/:id", isAuthenticated(), async (req, res, next) => {
+  try {
+    const { id } = req.params;
 
-      const post = await getPostById(id);
+    const post = await getPostById(id);
 
-      if (!post) {
-        res.render("404");
-      }
-
-      const userId = req.user._id;
-
-      if (post.author._id != userId) {
-        return res.render(`post/details/${post._id}`, {
-          errors: [{ msg: "You are not the creator of the post" }],
-        });
-      }
-
-      res.render("/post/edit", { data: post });
-    } catch (err) {
-      next(err);
+    if (!post) {
+      res.render("404");
     }
+
+    const userId = req.user._id;
+
+    if (post.author._id != userId) {
+      return res.render(`post/details/${post._id}`, {
+        errors: [{ msg: "You are not the creator of the post" }],
+      });
+    }
+
+    res.render("/post/edit", { data: post });
+  } catch (err) {
+    next(err);
   }
-);
+});
 
 export default postRouter;
