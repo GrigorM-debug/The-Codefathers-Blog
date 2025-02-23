@@ -7,6 +7,8 @@ import {
   gellAllPosts,
   getPostById,
   getAllPostsByUserId,
+  postExistById,
+  postAlreadyExistsByTitle,
 } from "../services/post.js";
 
 const postRouter = Router();
@@ -16,17 +18,22 @@ postRouter.get("/posts", async (req, res) => {
   res.render("post/catalog", { posts });
 });
 
-postRouter.get("/post/details/:_id", async (req, res) => {
+postRouter.get("/post/details/:_id", async (req, res, next) => {
   try {
     const post = await getPostById(req.params._id);
+
+    if (!post) {
+      return res.render("404", {
+        errors: [{ msg: err.message }],
+      });
+    }
+
     const authorPosts = await getAllPostsByUserId(post.author._id);
 
     const isUserPostCreater = req.user && req.user._id == post.author._id;
     res.render("post/details", { post, authorPosts, isUserPostCreater });
   } catch (err) {
-    res.render("404", {
-      errors: [{ msg: err.message }],
-    });
+    next(err);
   }
 });
 
@@ -38,7 +45,7 @@ postRouter.post(
   "/create",
   isAuthenticated(),
   postValidator,
-  async (req, res) => {
+  async (req, res, next) => {
     const errors = validationResult(req);
 
     if (errors.length > 0) {
@@ -49,16 +56,22 @@ postRouter.post(
     }
 
     try {
+      const postExists = await postAlreadyExistsByTitle(req.body.title);
+
+      if (postExists) {
+        return res.render("post/create", {
+          errors: [{ msg: err.message }],
+          data: req.body,
+        });
+      }
+
       const postId = await createPost(req.body, req.user._id);
       res.render(`post/details/${postId}`, {
         success: true,
         msg: "Post created successfully",
       });
     } catch (err) {
-      res.render("post/create", {
-        errors: [{ msg: err.message }],
-        data: req.body,
-      });
+      next(err);
     }
   }
 );
