@@ -5,10 +5,12 @@ import { validationResult } from "express-validator";
 import {
   createPost,
   gellAllPosts,
-  getPostById,
+  getPostByIdWithComments,
   getAllPostsByUserId,
   postExistById,
   postAlreadyExistsByTitle,
+  deletePost,
+  getPostById,
 } from "../services/post.js";
 
 const postRouter = Router();
@@ -20,7 +22,7 @@ postRouter.get("/posts", async (req, res) => {
 
 postRouter.get("/post/details/:_id", async (req, res, next) => {
   try {
-    const post = await getPostById(req.params._id);
+    const post = await getPostByIdWithComments(req.params._id);
 
     if (!post) {
       return res.render("404", {
@@ -60,7 +62,7 @@ postRouter.post(
 
       if (postExists) {
         return res.render("post/create", {
-          errors: [{ msg: err.message }],
+          errors: [{ msg: "Post already exists" }],
           data: req.body,
         });
       }
@@ -69,6 +71,67 @@ postRouter.post(
       res.render(`post/details/${postId}`, {
         success: true,
         msg: "Post created successfully",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+postRouter.get(
+  "/post/delete/:id",
+  isAuthenticated(),
+  async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+      const post = await getPostById(id);
+
+      if (!post) {
+        return res.render("404");
+      }
+
+      const userId = req.user._id;
+
+      if (post.author._id != userId) {
+        return res.render(`post/details/${post._id}`, {
+          errors: [{ msg: "You are not the creator of the post" }],
+        });
+      }
+
+      res.render("post/delete_modal", { post: post });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+postRouter.post(
+  "/post/delete/:id",
+  isAuthenticated(),
+  async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+      const post = await getPostById(id);
+
+      if (!post) {
+        return res.render("404");
+      }
+
+      const userId = req.user._id;
+
+      if (post.author._id != userId) {
+        return res.render(`post/details/${post._id}`, {
+          errors: [{ msg: "You are not the creator of the post" }],
+        });
+      }
+
+      await deletePost(id);
+
+      res.render("/post/posts", {
+        success: true,
+        msg: "Post deleted successfully",
       });
     } catch (err) {
       next(err);

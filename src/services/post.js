@@ -33,7 +33,7 @@ export async function gellAllPosts() {
   return posts;
 }
 
-export async function getPostById(postId) {
+export async function getPostByIdWithComments(postId) {
   const post = await Post.findById(postId)
     .populate("author")
     .populate({
@@ -71,4 +71,14 @@ export async function postExistById(id) {
   }
 
   return true;
+}
+
+export async function deletePost(id) {
+  await Post.findByIdAndDelete(id);
+}
+
+export async function getPostById(postId) {
+  const post = await Post.findById(postId).lean();
+
+  return post;
 }
