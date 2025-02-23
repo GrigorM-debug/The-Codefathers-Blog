@@ -1,0 +1,20 @@
+<div class="d-flex justify-content-center align-items-start vh-100">
+  <div class="card shadow-lg p-4" style="max-width: 500px;">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="m-0">Are you sure you want to delete this post?</h5>
+    </div>
+    <div class="card-body text-center">
+      <h5>Title: {{post.title}}</h5>
+
+      <div class="d-flex justify-content-between">
+        <a
+          href="/post/details/{{post._id}}"
+          class="btn btn-secondary fw-bold"
+        >Cancel</a>
+        <form action="/post/delete/{{post._id}}" method="POST">
+          <button type="submit" class="btn btn-danger fw-bold">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
