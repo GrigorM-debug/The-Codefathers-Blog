@@ -1,6 +1,13 @@
 import { Router } from "express";
 import { isAuthenticated, isGuest } from "../middlewares/guards.js";
-import { register, login, changePassword } from "../services/user.js";
+import {
+  register,
+  login,
+  changePassword,
+  userExists,
+  isPasswordValid,
+  newPasswordIsDifferentFromTheOldPassword,
+} from "../services/user.js";
 import {
   registerValidator,
   loginValidator,
@@ -15,35 +22,52 @@ userRouter.get("/register", isGuest(), (req, res) => {
   res.render("register");
 });
 
-userRouter.post("/register", isGuest(), registerValidator, async (req, res) => {
-  const errors = validationResult(req);
+userRouter.post(
+  "/register",
+  isGuest(),
+  registerValidator,
+  async (req, res, next) => {
+    const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.render("register", { errors: errors.array(), data: req.body });
-  }
+    if (!errors.isEmpty()) {
+      return res.render("register", { errors: errors.array(), data: req.body });
+    }
 
-  try {
-    const token = await register(req.body);
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 2 * 24 * 60 * 60 * 1000,
-    });
-    res.redirect("/");
-  } catch (error) {
-    res.render("register", {
-      errors: [{ msg: error.message }],
-      data: req.body,
-    });
-    return;
+    try {
+      const userData = {
+        username: req.body.username,
+        email: req.body.email,
+      };
+
+      const userExists = await userExists(userData);
+
+      if (!userExists) {
+        return res.render("register", {
+          errors: [{ msg: "User already exists" }],
+          data: req.body,
+        });
+      }
+
+      const token = await register(req.body);
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 2 * 24 * 60 * 60 * 1000,
+      });
+
+      res.redirect("/");
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 userRouter.get("/login", isGuest(), (req, res) => {
   res.render("login");
 });
 
-userRouter.post("/login", isGuest(), loginValidator, async (req, res) => {
+userRouter.post("/login", isGuest(), loginValidator, async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -51,7 +75,32 @@ userRouter.post("/login", isGuest(), loginValidator, async (req, res) => {
   }
 
   try {
+    const userData = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+    };
+
+    const userExist = await userExists(userData);
+
+    if (!userExist) {
+      return res.render("login", {
+        errors: [{ msg: "User doesn't exist" }],
+        data: req.body,
+      });
+    }
+
+    const isPasswordValidBoolean = await isPasswordValid(userData);
+
+    if (!isPasswordValidBoolean) {
+      return res.render("login", {
+        errors: [{ msg: "Wrong password" }],
+        data: req.body,
+      });
+    }
+
     const token = await login(req.body);
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
@@ -59,8 +108,7 @@ userRouter.post("/login", isGuest(), loginValidator, async (req, res) => {
     });
     res.redirect("/");
   } catch (error) {
-    res.render("login", { errors: [{ msg: error.message }], data: req.body });
-    return;
+    next(error);
   }
 });
 
@@ -76,7 +124,7 @@ userRouter.get("/changing-password", (req, res) => {
 userRouter.post(
   "/changing-password",
   changePasswordValidator,
-  async (req, res) => {
+  async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -87,17 +135,39 @@ userRouter.post(
     }
 
     try {
+      const userData = {
+        username: req.body.username,
+        email: req.body.email,
+        newPassword: req.body.newPassword,
+      };
+
+      const userExist = await userExists(userData);
+
+      if (!userExist) {
+        return res.render("changing-password", {
+          errors: [{ msg: "User not found" }],
+          data: req.body,
+        });
+      }
+
+      const isNewPasswordTheSameAsTheOldOne =
+        await newPasswordIsDifferentFromTheOldPassword(userData);
+
+      if (isNewPasswordTheSameAsTheOldOne) {
+        return res.render("changing-password", {
+          errors: [{ msg: "New password can not be the same as your old" }],
+          data: req.body,
+        });
+      }
+
       await changePassword(req.body);
+
       res.render("login", {
         success: true,
         msg: "Password changed successfully!",
       });
     } catch (error) {
-      res.render("changing-password", {
-        errors: [{ msg: error.message }],
-        data: req.body,
-      });
-      return;
+      next(error);
     }
   }
 );

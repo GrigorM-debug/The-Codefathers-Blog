@@ -2,17 +2,20 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import { generateToken } from "./jwt.js";
 
-export async function register(userData) {
-  //Check if user exists
-  const userExists = await User.findOne({
+export async function userExists(userData) {
+  const user = await User.findOne({
     username: userData.username,
     email: userData.email,
   });
 
-  if (userExists) {
-    throw new Error("User already exists");
+  if (!user) {
+    return false;
   }
 
+  return true;
+}
+
+export async function register(username, email) {
   //Hash password
   const salt = await bcrypt.genSalt(10);
 
@@ -40,53 +43,40 @@ export async function register(userData) {
   return token;
 }
 
+export async function isPasswordValid(userData) {
+  const user = await User.findOne({
+    username: userData.username,
+    email: userData.email,
+  });
+
+  const isPasswordValid = await bcrypt.compare(
+    userData.password,
+    user.passwordHash
+  );
+
+  return isPasswordValid;
+}
+
 export async function login(userData) {
   const user = await User.findOne({
     username: userData.username,
     email: userData.email,
   });
 
-  if (user) {
-    const isMatch = await bcrypt.compare(userData.password, user.passwordHash);
+  const payload = {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    imageUrl: user.imageUrl,
+  };
 
-    if (!isMatch) {
-      throw new Error("Invalid password");
-    }
+  const token = generateToken(payload);
 
-    const payload = {
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      imageUrl: user.imageUrl,
-    };
-
-    const token = generateToken(payload);
-
-    return token;
-  } else {
-    throw new Error("User not found");
-  }
+  return token;
 }
 
 export async function changePassword(userData) {
   const userExist = await User.findOne({ username: userData.username });
-
-  if (!userExist) {
-    throw new Error("User not found");
-  }
-
-  if (userData.newPassword !== userData.newPasswordRepeat) {
-    throw new Error("Passwords do not match");
-  }
-
-  const isMatch = await bcrypt.compare(
-    userData.newPassword,
-    userExist.passwordHash
-  );
-
-  if (isMatch) {
-    throw new Error("New password must be different from the old one");
-  }
 
   const salt = await bcrypt.genSalt(10);
   const newPasswordHash = await bcrypt.hash(userData.newPassword, salt);
@@ -94,4 +84,12 @@ export async function changePassword(userData) {
   userExist.passwordHash = newPasswordHash;
 
   await userExist.save();
+}
+
+export async function newPasswordIsDifferentFromTheOldPassword(userData) {
+  const user = await User.findOne({ username: userData.username });
+
+  const isMatch = await bcrypt.compare(userData.newPassword, user.passwordHash);
+
+  return isMatch;
 }
