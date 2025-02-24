@@ -1,6 +1,6 @@
 <div class="container create-post-container">
   <div class="section-title text-center">
-    <h1 class="mt-2">Create Post</h1>
+    <h1 class="mt-2">Edit Post</h1>
   </div>
   <form action="/post/edit/{{data._id}}" method="post">
     <div class="form-group">
@@ -27,8 +27,8 @@
         required="true"
         minlength="3"
         maxlength="5000"
-        pattern="/^https?:\/\/(?:[\w-]+\.)+[\w-]+(?:\/[\w-.\/?%&=]*)?\.(?:jpg|jpeg|png|gif|webp)(?:\?[\w=&]*)?$/i,"
-        value="{{data.bannerImageUrl}}"
+        pattern="^https?:\/\/(?:[\w-]+\.)+[\w-]+(?:\/[\w\-./?%&=]*)?\.(?:jpg|jpeg|png|gif|webp)(?:\?[\w=&]*)?$"
+        value="{{data.bannnerImageUrl}}"
       />
     </div>
 

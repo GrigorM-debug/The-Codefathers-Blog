@@ -11,6 +11,7 @@ import {
   postAlreadyExistsByTitle,
   deletePost,
   getPostById,
+  updatePost,
 } from "../services/post.js";
 
 const postRouter = Router();
@@ -185,5 +186,47 @@ postRouter.get("/post/edit/:id", isAuthenticated(), async (req, res, next) => {
     next(err);
   }
 });
+
+postRouter.post(
+  "/post/edit/:id",
+  isAuthenticated(),
+  postValidator,
+  async (req, res, next) => {
+    const { id } = req.params;
+
+    const post = await getPostById(id);
+
+    if (!post) {
+      return res.render("404");
+    }
+
+    const userId = req.user._id;
+
+    if (post.author._id != userId) {
+      req.session.errors = [{ msg: "You are not the creator of the post" }];
+
+      return res.redirect(`/post/details/${id}`);
+    }
+
+    const errors = validationResult(req.body);
+
+    if (!errors.isEmpty()) {
+      return res.render("post/edit", { data: post, errors: errors });
+    }
+
+    try {
+      await updatePost(id, req.body);
+
+      req.session.successMessage = {
+        success: true,
+        msg: "Post successfully updated",
+      };
+
+      res.redirect(`/post/details/${id}`);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 export default postRouter;

@@ -83,3 +83,7 @@ export async function getPostById(postId) {
 
   return post;
 }
+
+export async function updatePost(postId, newData) {
+  await Post.findByIdAndUpdate(postId, newData);
+}
