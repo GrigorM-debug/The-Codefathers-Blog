@@ -20,8 +20,6 @@ postRouter.get("/posts", async (req, res) => {
   const successMessage = req.session.successMessage || null;
   delete req.session.successMessage;
 
-  console.log(successMessage);
-
   const posts = await gellAllPosts();
   res.render("post/catalog", { posts, success: successMessage });
 });
@@ -36,7 +34,7 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
     const errors = req.session.errors;
 
     if (!post) {
-      return res.render("404", {
+      return res.render("error_pages/404", {
         errors: [{ msg: err.message }],
       });
     }
@@ -108,7 +106,7 @@ postRouter.get(
       const post = await getPostById(id);
 
       if (!post) {
-        return res.render("404");
+        return res.render("error_pages/404");
       }
 
       const userId = req.user._id;
@@ -168,7 +166,7 @@ postRouter.get("/post/edit/:id", isAuthenticated(), async (req, res, next) => {
     const post = await getPostById(id);
 
     if (!post) {
-      res.render("404");
+      res.render("error_pages/404");
     }
 
     const userId = req.user._id;
@@ -197,7 +195,7 @@ postRouter.post(
     const post = await getPostById(id);
 
     if (!post) {
-      return res.render("404");
+      return res.render("error_pages/404");
     }
 
     const userId = req.user._id;
