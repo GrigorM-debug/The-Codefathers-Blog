@@ -34,19 +34,21 @@
                   </ul>
                 </div>
               </div>
-              {{#if isUserPostCreater}}
-                <div class="author-action">
-                  <a
-                    href="/post/edit/{{post._id}}"
-                    class="btn btn-success"
-                  >Edit</a>
-                  <a
-                    href="/post/delete/{{post._id}}"
-                    class="btn btn-danger"
-                  >Delete</a>
-                </div>
-                {{else}}
-                  <a href="" ><i class="fa-regular fa-heart fa-4x" <i class="fa-regular fa-heart" style="color: #ff0000;"></i></i></a>
+              {{#if isAuthenticated}}
+                {{#if isUserPostCreater}}
+                  <div class="author-action">
+                    <a
+                      href="/post/edit/{{post._id}}"
+                      class="btn btn-success"
+                    >Edit</a>
+                    <a
+                      href="/post/delete/{{post._id}}"
+                      class="btn btn-danger"
+                    >Delete</a>
+                  </div>
+                  {{else}}
+                    <a href="" ><i class="fa-regular fa-heart fa-4x" <i class="fa-regular fa-heart" style="color: #ff0000;"></i></i></a>
+                {{/if}}
               {{/if}}
             </div>
           </div>
