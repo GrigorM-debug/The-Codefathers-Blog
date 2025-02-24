@@ -16,13 +16,23 @@ import {
 const postRouter = Router();
 
 postRouter.get("/posts", async (req, res) => {
+  const successMessage = req.session.successMessage || null;
+  delete req.session.successMessage;
+
+  console.log(successMessage);
+
   const posts = await gellAllPosts();
-  res.render("post/catalog", { posts });
+  res.render("post/catalog", { posts, success: successMessage });
 });
 
 postRouter.get("/post/details/:_id", async (req, res, next) => {
   try {
     const post = await getPostByIdWithComments(req.params._id);
+
+    const successMessage = req.session.successMessage || null;
+    delete req.session.successMessage;
+
+    const errors = req.session.errors;
 
     if (!post) {
       return res.render("404", {
@@ -33,7 +43,13 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
     const authorPosts = await getAllPostsByUserId(post.author._id);
 
     const isUserPostCreater = req.user && req.user._id == post.author._id;
-    res.render("post/details", { post, authorPosts, isUserPostCreater });
+    res.render("post/details", {
+      post,
+      authorPosts,
+      isUserPostCreater,
+      success: successMessage,
+      errors: errors,
+    });
   } catch (err) {
     next(err);
   }
@@ -50,8 +66,8 @@ postRouter.post(
   async (req, res, next) => {
     const errors = validationResult(req);
 
-    if (errors.length > 0) {
-      return res.render("create", {
+    if (!errors.isEmpty()) {
+      return res.render("post/create", {
         errors: errors.array(),
         data: req.body,
       });
@@ -68,10 +84,13 @@ postRouter.post(
       }
 
       const postId = await createPost(req.body, req.user._id);
-      res.render(`post/details/${postId}`, {
+
+      req.session.successMessage = {
         success: true,
         msg: "Post created successfully",
-      });
+      };
+
+      res.redirect(`/post/details/${postId}`);
     } catch (err) {
       next(err);
     }
@@ -94,9 +113,9 @@ postRouter.get(
       const userId = req.user._id;
 
       if (post.author._id != userId) {
-        return res.render(`post/details/${post._id}`, {
-          errors: [{ msg: "You are not the creator of the post" }],
-        });
+        req.session.errors = [{ msg: "You are not the creator of the post" }];
+
+        return res.redirect(`/post/details/${id}`);
       }
 
       res.render("post/delete_modal", { post: post });
@@ -122,17 +141,19 @@ postRouter.post(
       const userId = req.user._id;
 
       if (post.author._id != userId) {
-        return res.render(`post/details/${post._id}`, {
-          errors: [{ msg: "You are not the creator of the post" }],
-        });
+        req.session.errors = [{ msg: "You are not the creator of the post" }];
+
+        return res.redirect(`/post/details/${id}`);
       }
 
       await deletePost(id);
 
-      res.render("/post/posts", {
+      req.session.successMessage = {
         success: true,
         msg: "Post deleted successfully",
-      });
+      };
+
+      res.redirect("/posts");
     } catch (err) {
       next(err);
     }
@@ -152,12 +173,14 @@ postRouter.get("/post/edit/:id", isAuthenticated(), async (req, res, next) => {
     const userId = req.user._id;
 
     if (post.author._id != userId) {
-      return res.render(`post/details/${post._id}`, {
-        errors: [{ msg: "You are not the creator of the post" }],
-      });
+      req.session.errors = [{ msg: "You are not the creator of the post" }];
+
+      return res.redirect(`/post/details/${id}`);
     }
 
-    res.render("/post/edit", { data: post });
+    console.log(post);
+
+    res.render("post/edit", { data: post });
   } catch (err) {
     next(err);
   }

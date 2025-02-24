@@ -14,9 +14,16 @@
     "format": "prettier --write ."
   },
   "nyc": {
-    "include": ["src/services/*.js"],
-    "exclude": ["test/**/*.js"],
-    "reporter": ["text", "html"],
+    "include": [
+      "src/services/*.js"
+    ],
+    "exclude": [
+      "test/**/*.js"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
     "all": true,
     "check-coverage": true,
     "branches": 80,
@@ -50,6 +57,7 @@
     "emailjs": "^4.0.3",
     "express": "^4.21.2",
     "express-handlebars": "^8.0.1",
+    "express-session": "^1.18.1",
     "express-validator": "^7.2.1",
     "jodit": "^4.4.7",
     "jsonwebtoken": "^9.0.2",

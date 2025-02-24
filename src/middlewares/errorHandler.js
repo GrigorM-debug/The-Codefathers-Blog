@@ -3,6 +3,7 @@ export default function errorHandler() {
     console.error(err.stack);
 
     const environment = process.env.ENVIRONMENT;
+    console.log(err.message);
 
     if (environment === "development") {
       res.render("/error_pages/dev_error_page", { err });

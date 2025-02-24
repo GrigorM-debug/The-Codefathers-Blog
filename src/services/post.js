@@ -54,6 +54,7 @@ export async function getPostByIdWithComments(postId) {
 export async function getAllPostsByUserId(userId) {
   const userPosts = await Post.find({ author: userId })
     .sort({ createdAt: "descending" })
+    .limit(3)
     .lean();
 
   userPosts.forEach((post) => {
