@@ -20,7 +20,7 @@ import { validationResult } from "express-validator";
 const userRouter = Router();
 
 userRouter.get("/register", isGuest(), (req, res) => {
-  res.render("register");
+  res.render("user/register");
 });
 
 userRouter.post(
@@ -31,7 +31,10 @@ userRouter.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.render("register", { errors: errors.array(), data: req.body });
+      return res.render("user/register", {
+        errors: errors.array(),
+        data: req.body,
+      });
     }
 
     try {
@@ -43,7 +46,7 @@ userRouter.post(
       const isUserExisting = await userExists(userData);
 
       if (isUserExisting) {
-        return res.render("register", {
+        return res.render("user/register", {
           errors: [{ msg: "User already exists" }],
           data: req.body,
         });
@@ -65,14 +68,14 @@ userRouter.post(
 );
 
 userRouter.get("/login", isGuest(), (req, res) => {
-  res.render("login");
+  res.render("user/login");
 });
 
 userRouter.post("/login", isGuest(), loginValidator, async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.render("login", { errors: errors.array(), data: req.body });
+    return res.render("user/login", { errors: errors.array(), data: req.body });
   }
 
   try {
@@ -85,7 +88,7 @@ userRouter.post("/login", isGuest(), loginValidator, async (req, res, next) => {
     const userExist = await userExists(userData);
 
     if (!userExist) {
-      return res.render("login", {
+      return res.render("user/login", {
         errors: [{ msg: "User doesn't exist" }],
         data: req.body,
       });
@@ -94,7 +97,7 @@ userRouter.post("/login", isGuest(), loginValidator, async (req, res, next) => {
     const isPasswordValidBoolean = await isPasswordValid(userData);
 
     if (!isPasswordValidBoolean) {
-      return res.render("login", {
+      return res.render("user/login", {
         errors: [{ msg: "Wrong password" }],
         data: req.body,
       });
@@ -119,7 +122,7 @@ userRouter.get("/logout", isAuthenticated(), (req, res) => {
 });
 
 userRouter.get("/changing-password", (req, res) => {
-  res.render("changing-password");
+  res.render("user/changing-password");
 });
 
 userRouter.post(
@@ -129,7 +132,7 @@ userRouter.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.render("changing-password", {
+      return res.render("user/changing-password", {
         errors: errors.array(),
         data: req.body,
       });
@@ -139,7 +142,7 @@ userRouter.post(
       const userExist = await userExistByUsername(req.body.username);
 
       if (!userExist) {
-        return res.render("changing-password", {
+        return res.render("user/changing-password", {
           errors: [{ msg: "User not found" }],
           data: req.body,
         });
@@ -149,7 +152,7 @@ userRouter.post(
         await newPasswordIsDifferentFromTheOldPassword(req.body);
 
       if (isNewPasswordTheSameAsTheOldOne) {
-        return res.render("changing-password", {
+        return res.render("user/changing-password", {
           errors: [{ msg: "New password can not be the same as your old" }],
           data: req.body,
         });
@@ -162,7 +165,7 @@ userRouter.post(
         msg: "Password changed successfully!",
       };
 
-      res.render("login", { success: successMessage });
+      res.render("user/login", { success: successMessage });
     } catch (error) {
       next(error);
     }
