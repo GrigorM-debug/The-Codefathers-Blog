@@ -157,10 +157,12 @@ userRouter.post(
 
       await changePassword(req.body);
 
-      res.render("login", {
+      const successMessage = {
         success: true,
         msg: "Password changed successfully!",
-      });
+      };
+
+      res.render("login", { success: successMessage });
     } catch (error) {
       next(error);
     }
