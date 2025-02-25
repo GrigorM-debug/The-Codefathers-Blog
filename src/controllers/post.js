@@ -31,7 +31,8 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
     const successMessage = req.session.successMessage || null;
     delete req.session.successMessage;
 
-    const errors = req.session.errors;
+    const errors = req.session.errors || [];
+    delete req.session.errors;
 
     if (!post) {
       return res.render("error_pages/404", {
