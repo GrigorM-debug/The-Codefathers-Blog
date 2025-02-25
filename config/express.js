@@ -3,6 +3,7 @@ import express from "express";
 import auth from "../src/middlewares/auth.js";
 import errorHandler from "../src/middlewares/errorHandler.js";
 import session from "express-session";
+import helmet from "helmet";
 
 export default function expressConfig(app) {
   const secret = "Cookie parser secret";
@@ -19,11 +20,14 @@ export default function expressConfig(app) {
       },
     })
   );
-  app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-  }))
+  app.use(
+    session({
+      secret: "keyboard cat",
+      resave: false,
+      saveUninitialized: true,
+    })
+  );
   app.use(auth());
   app.use(errorHandler());
+  app.use(helmet());
 }
