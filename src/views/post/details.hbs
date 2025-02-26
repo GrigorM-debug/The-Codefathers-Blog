@@ -49,11 +49,11 @@
                   {{else}}
                     {{#if isUserLikedPost}}
                     <form action="/dislike/post/{{post._id}}" method="POST">
-                      <button type="submit"><i class="fa-solid fa-heart fa-4x" style="color: #ff0000;"></i></button>
+                      <button class="border-0 bg-transparent text-dark" type="submit"><i class="fa-solid fa-heart fa-4x" style="color: #ff0000;"></i></button>
                     </form>
                     {{else}}
                       <form action="/like/post/{{post._id}}" method="post">
-                        <button type="submit"><i class="fa-regular fa-heart fa-4x"  style="color: #ff0000;"></i></button>
+                        <button class="border-0 bg-transparent text-dark" type="submit"><i class="fa-regular fa-heart fa-4x"  style="color: #ff0000;"></i></button>
                       </form>
                     {{/if}}
                 {{/if}}
