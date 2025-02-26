@@ -1,6 +1,10 @@
 <div class="contact-form article-comment">
-  <h4>Leave a Reply</h4>
-  <form id="contact-form" method="POST" action="/leave-comment/:{{this}}">
+  <h4>Leave a Comment</h4>
+  <form
+    id="contact-form"
+    method="POST"
+    action="/add/comment/post/{{this.post._id}}"
+  >
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
@@ -9,11 +13,11 @@
             name="content"
             id="editor"
             placeholder="Your message *"
-            rows="10"
+            rows="5"
             class="form-control"
             required="true"
             minlength="100"
-          ></textarea>
+          >{{this.leaveCommentFormData.content}}</textarea>
         </div>
       </div>
       <div class="col-md-12">
