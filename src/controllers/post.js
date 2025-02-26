@@ -40,6 +40,9 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
     const leaveCommentFormData = req.session.leaveCommentFormData || null;
     delete req.session.leaveCommentFormData;
 
+    const isEditingComment = req.session.isEditingComment || false;
+    delete req.session.isEditingComment;
+
     if (!post) {
       return res.render("error_pages/404", {
         errors: [{ msg: err.message }],
@@ -68,6 +71,7 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
       errors: errors,
       isUserLikedPost,
       leaveCommentFormData,
+      isEditingComment,
     });
   } catch (err) {
     next(err);

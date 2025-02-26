@@ -4,7 +4,9 @@ import {
   commentExist,
   createComment,
   deleteComment,
+  getComment,
   isUserCommentAuthor,
+  updateComment,
 } from "../services/comment.js";
 import { postExistById } from "../services/post.js";
 import { commentValidation } from "../express-validator/comment.js";
@@ -112,6 +114,117 @@ commentRouter.post(
         msg: "Comment successfully deleted",
       };
 
+      res.redirect(`/post/details/${id}`);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+commentRouter.get(
+  "/edit/comment/post/:id",
+  isAuthenticated(),
+  async (req, res, next) => {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    //1. Check if comment exists
+    const comment = await getComment(userId, id);
+
+    if (!comment) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "Comment doesn't exist" }],
+      });
+    }
+
+    //2. Check if post exists
+    const isPostExisting = await postExistById(id);
+
+    if (!isPostExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "Post doesn't exist" }],
+      });
+    }
+
+    //3. Check if user is comment author
+    const isUserCommentAuthorBool = await isUserCommentAuthor(userId, id);
+
+    if (!isUserCommentAuthorBool) {
+      req.session.errors = [{ msg: "You are not the comment author" }];
+
+      return res.redirect(`/post/details/${id}`);
+    }
+
+    try {
+      req.session.leaveCommentFormData = {
+        content: comment.content,
+      };
+
+      req.session.isEditingComment = true;
+
+      res.redirect(`/post/details/${id}`);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+commentRouter.post(
+  "/edit/comment/post/:id",
+  isAuthenticated(),
+  commentValidation,
+  async (req, res, next) => {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    //1. Check if comment exists
+    const isCommentExistingBool = await commentExist(userId, id);
+
+    if (!isCommentExistingBool) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "Comment doesn't exist" }],
+      });
+    }
+
+    //2. Check if post exists
+    const isPostExisting = await postExistById(id);
+
+    if (!isPostExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "Post doesn't exist" }],
+      });
+    }
+
+    //3. Check if user is comment author
+    const isUserCommentAuthorBool = await isUserCommentAuthor(userId, id);
+
+    if (!isUserCommentAuthorBool) {
+      req.session.errors = [{ msg: "You are not the comment author" }];
+
+      return res.redirect(`/post/details/${id}`);
+    }
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      req.session.leaveCommentFormData = {
+        content: req.body.content,
+      };
+
+      req.session.errors = errors.array();
+
+      return res.redirect(`/post/details/${id}`);
+    }
+
+    try {
+      req.session.isEditingComment = false;
+
+      req.session.successMessage = {
+        success: true,
+        msg: "Comment successfully edited",
+      };
+
+      await updateComment(userId, id, req.body.content);
       res.redirect(`/post/details/${id}`);
     } catch (err) {
       next(err);

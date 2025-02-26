@@ -20,11 +20,10 @@
                 <div class="d-flex justify-content-between align-items-center">
 
                   {{#if this.isUserPostCommentAuthor}}
-                    <form action="" method="post">
-                      <button type="button" class="btn btn-success"><i
-                          class="fa-solid fa-pen-to-square"
-                        ></i></button>
-                    </form>
+                    <a
+                      href="/edit/comment/post/{{this.post}}"
+                      class="btn btn-success"
+                    ><i class="fa-solid fa-pen-to-square"></i></a>
 
                     <form
                       action="/delete/comment/post/{{this.post}}"

@@ -52,3 +52,16 @@ export async function deleteComment(userId, postId) {
     );
   }
 }
+
+export async function getComment(userId, postId) {
+  const comment = await Comment.findOne({ author: userId, post: postId });
+
+  return comment;
+}
+
+export async function updateComment(userId, postId, updatedContent) {
+  await Comment.findOneAndUpdate(
+    { author: userId, post: postId },
+    { content: updatedContent, createdAt: new Date() }
+  );
+}

@@ -3,7 +3,7 @@
   <form
     id="contact-form"
     method="POST"
-    action="/add/comment/post/{{this.post._id}}"
+    action="{{#if this.isEditingComment}}/edit/comment/post/{{this.post._id}}{{else}}/add/comment/post/{{this.post._id}}{{/if}}"
   >
     <div class="row">
       <div class="col-md-12">
