@@ -7,28 +7,30 @@
         {{#if this.comments}}
           {{#each this.comments}}
             <div class="media">
-              <a class="pull-left" href="#"><img
-                  class="media-object"
-                  src={{this.author.imageUrl}}
-                  alt=""
-                /></a>
+              <div class="d-flex justify-content-start align-items-center">
+                <a class="pull-left" href="#"><img
+                    class="media-object"
+                    src={{this.author.imageUrl}}
+                    alt=""
+                    style="border-radius: 50%;"
+                  /></a>
+                <h4 class="media-heading">User: {{this.author.username}}</h4>
+              </div>
               <div class="media-body">
-                <h4 class="media-heading">{{this.author.username}}</h4>
                 <p class="htmlcode">{{{this.content}}}</p>
-                {{! <ul class="list-unstyled list-inline media-detail pull-left">
-              <li><i class="fa fa-calendar"></i>27/02/2014</li>
-              <li><i class="fa fa-thumbs-up"></i>13</li>
-            </ul>
-            <ul class="list-unstyled list-inline media-detail pull-right">
-              <li class=""><a href="">Like</a></li>
-              <li class=""><a href="">Reply</a></li>
-            </ul> }}
+                <ul class="list-unstyled list-inline media-detail pull-left">
+                  <li><i class="fa fa-calendar"></i> {{this.createdAt}}</li>
+                  {{! <li><i class="fa fa-thumbs-up"></i>13</li> }}
+                </ul>
+                {{! <ul class="list-unstyled list-inline media-detail pull-right">
+                  <li class=""><a href="">Like</a></li>
+                  <li class=""><a href="">Reply</a></li>
+                </ul> }}
               </div>
             </div>
           {{/each}}
-          {{#else}}
-            <h3>No comments</h3>
-          {{/else}}
+        {{else}}
+          <h3>No comments</h3>
         {{/if}}
         <!-- COMMENT 1 - END -->
       </div>

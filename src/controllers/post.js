@@ -37,6 +37,9 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
     const errors = req.session.errors || [];
     delete req.session.errors;
 
+    const leaveCommentFormData = req.session.leaveCommentFormData || null;
+    delete req.session.leaveCommentFormData;
+
     if (!post) {
       return res.render("error_pages/404", {
         errors: [{ msg: err.message }],
@@ -56,6 +59,7 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
       success: successMessage,
       errors: errors,
       isUserLikedPost,
+      leaveCommentFormData,
     });
   } catch (err) {
     next(err);
