@@ -52,6 +52,14 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
 
     const isUserLikedPost = await likeExistsByUserIdAndPostId(userId, post._id);
 
+    const isUserPostCommentAuthor = post.comments.some(
+      (c) => c.author._id == userId
+    );
+
+    post.comments.forEach((comment) => {
+      comment.isUserPostCommentAuthor = isUserPostCommentAuthor;
+    });
+
     res.render("post/details", {
       post,
       authorPosts,

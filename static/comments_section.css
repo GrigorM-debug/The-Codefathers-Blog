@@ -57,6 +57,7 @@
   border-top: 1px dashed #dddddd;
   padding: 20px 0;
   margin: 0;
+  width: 150%;
 }
 
 #comments .media > .pull-left {
