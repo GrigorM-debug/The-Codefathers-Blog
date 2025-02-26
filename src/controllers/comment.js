@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { isAuthenticated } from "../middlewares/guards.js";
-import { commentExist, createComment } from "../services/comment.js";
+import {
+  commentExist,
+  createComment,
+  deleteComment,
+  isUserCommentAuthor,
+} from "../services/comment.js";
 import { postExistById } from "../services/post.js";
 import { commentValidation } from "../express-validator/comment.js";
 import { validationResult } from "express-validator";
@@ -55,6 +60,56 @@ commentRouter.post(
       req.session.successMessage = {
         success: true,
         msg: "Comment successfully added",
+      };
+
+      res.redirect(`/post/details/${id}`);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+commentRouter.post(
+  "/delete/comment/post/:id",
+  isAuthenticated(),
+  async (req, res, next) => {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    //1. Check if comment exists
+    const isCommentExisting = await commentExist(userId, id);
+
+    if (!isCommentExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "Comment doesn't exist" }],
+      });
+    }
+
+    //2. Check if post exists
+    const isPostExisting = await postExistById(id);
+
+    if (!isPostExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "Post doesn't exist" }],
+      });
+    }
+
+    //3. Check if user is comment author
+    const isUserCommentAuthorBool = await isUserCommentAuthor(userId, id);
+
+    if (!isUserCommentAuthorBool) {
+      req.session.errors = [{ msg: "You are not the comment author" }];
+
+      return res.redirect(`/post/details/${id}`);
+    }
+
+    //4. Make the logic for deleting comment
+    try {
+      await deleteComment(userId, id);
+
+      req.session.successMessage = {
+        success: true,
+        msg: "Comment successfully deleted",
       };
 
       res.redirect(`/post/details/${id}`);

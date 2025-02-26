@@ -26,8 +26,11 @@
                         ></i></button>
                     </form>
 
-                    <form action="" method="post">
-                      <button type="button" class="btn btn-danger"><i
+                    <form
+                      action="/delete/comment/post/{{this.post}}"
+                      method="post"
+                    >
+                      <button type="submit" class="btn btn-danger"><i
                           class="fa-solid fa-trash"
                         ></i></button>
                     </form>
@@ -47,8 +50,6 @@
               </div>
             </div>
           {{/each}}
-        {{else}}
-          <h3>No comments</h3>
         {{/if}}
         <!-- COMMENT 1 - END -->
       </div>

@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import Comment from "../models/Comment.js";
-import { updateCommentsCollectionInPostSchemaWhenCommentingPost } from "./post.js";
+import {
+  updateCommentsCollectionInPostSchemaWhenCommentingPost,
+  updateCommentsCollectionInPostSchemaWhenDeletingComment,
+} from "./post.js";
 
 export async function createComment(commentData) {
   const newComment = await new Comment({
@@ -26,4 +29,26 @@ export async function commentExist(userId, postId) {
   }
 
   return true;
+}
+
+export async function isUserCommentAuthor(userId, postId) {
+  const comment = await Comment.findOne({ author: userId, post: postId });
+
+  if (!comment) {
+    return false;
+  }
+
+  return true;
+}
+
+export async function deleteComment(userId, postId) {
+  const comment = await Comment.findOne({ author: userId, post: postId });
+
+  if (comment) {
+    await comment.deleteOne(comment);
+    await updateCommentsCollectionInPostSchemaWhenDeletingComment(
+      comment._id,
+      postId
+    );
+  }
 }
