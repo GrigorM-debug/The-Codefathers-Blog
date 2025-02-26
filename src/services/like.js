@@ -1,6 +1,9 @@
 import Like from "../models/LIke.js";
 import mongoose from "mongoose";
-import { updateLikesCollectionInPostSchema } from "./post.js";
+import {
+  updateLikesCollectionInPostSchemaWhenLikingPost,
+  updateLikesCollectionInPostSchemaWhenDislikingPost,
+} from "./post.js";
 
 export async function likeExistsByUserIdAndPostId(userId, postId) {
   const like = await Like.findOne({ author: userId, post: postId });
@@ -21,5 +24,14 @@ export async function likePost(userId, postId) {
 
   await like.save();
 
-  await updateLikesCollectionInPostSchema(postId, like._id);
+  await updateLikesCollectionInPostSchemaWhenLikingPost(postId, like._id);
+}
+
+export async function dislikePost(userId, postId) {
+  const like = await Like.findOne({ author: userId, post: postId });
+
+  if (like) {
+    await like.deleteOne(like);
+    await updateLikesCollectionInPostSchemaWhenDislikingPost(postId, like._id);
+  }
 }

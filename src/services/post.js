@@ -98,10 +98,27 @@ export async function isUserPostAuthor(userId, postId) {
   return true;
 }
 
-export async function updateLikesCollectionInPostSchema(postId, likeId) {
+export async function updateLikesCollectionInPostSchemaWhenLikingPost(
+  postId,
+  likeId
+) {
   const post = await Post.findById(postId);
 
   post.likes.push(likeId);
 
   await post.save();
+}
+
+export async function updateLikesCollectionInPostSchemaWhenDislikingPost(
+  postId,
+  likeId
+) {
+  const post = await Post.findById(postId);
+
+  const likeIndex = post.likes.indexOf(likeId);
+
+  if (likeIndex > -1) {
+    post.likes.splice(likeIndex, 1);
+    post.save();
+  }
 }
