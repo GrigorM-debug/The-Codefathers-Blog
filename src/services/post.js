@@ -87,3 +87,21 @@ export async function getPostById(postId) {
 export async function updatePost(postId, newData) {
   await Post.findByIdAndUpdate(postId, newData);
 }
+
+export async function isUserPostAuthor(userId, postId) {
+  const post = await Post.findOne({ author: userId, _id: postId });
+
+  if (!post) {
+    return false;
+  }
+
+  return true;
+}
+
+export async function updateLikesCollectionInPostSchema(postId, likeId) {
+  const post = await Post.findById(postId);
+
+  post.likes.push(likeId);
+
+  await post.save();
+}

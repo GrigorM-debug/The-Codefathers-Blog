@@ -13,6 +13,7 @@ import {
   getPostById,
   updatePost,
 } from "../services/post.js";
+import { likeExistsByUserIdAndPostId } from "../services/like.js";
 
 const postRouter = Router();
 
@@ -26,6 +27,8 @@ postRouter.get("/posts", async (req, res) => {
 
 postRouter.get("/post/details/:_id", async (req, res, next) => {
   try {
+    const userId = req.user._id;
+
     const post = await getPostByIdWithComments(req.params._id);
 
     const successMessage = req.session.successMessage || null;
@@ -43,12 +46,16 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
     const authorPosts = await getAllPostsByUserId(post.author._id);
 
     const isUserPostCreater = req.user && req.user._id == post.author._id;
+
+    const isUserLikedPost = await likeExistsByUserIdAndPostId(userId, post._id);
+
     res.render("post/details", {
       post,
       authorPosts,
       isUserPostCreater,
       success: successMessage,
       errors: errors,
+      isUserLikedPost,
     });
   } catch (err) {
     next(err);
