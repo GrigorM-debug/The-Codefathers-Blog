@@ -55,10 +55,23 @@ export async function getPostByIdWithComments(postId) {
   return post;
 }
 
+//Gets the last 3 posts made by the the user that id is given to the method
 export async function getAllPostsByUserId(userId) {
   const userPosts = await Post.find({ author: userId })
     .sort({ createdAt: "descending" })
     .limit(3)
+    .lean();
+
+  userPosts.forEach((post) => {
+    post.createdAt = post.createdAt.toLocaleString();
+  });
+
+  return userPosts;
+}
+
+export async function getAllPostsByUserIdNoLimitation(userId) {
+  const userPosts = await Post.find({ author: userId })
+    .sort({ createdAt: "descending" })
     .lean();
 
   userPosts.forEach((post) => {
