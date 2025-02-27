@@ -8,6 +8,8 @@ import {
   isPasswordValid,
   newPasswordIsDifferentFromTheOldPassword,
   userExistByUsername,
+  userExixtsById,
+  getAllUserData,
 } from "../services/user.js";
 import {
   registerValidator,
@@ -16,6 +18,8 @@ import {
 } from "../express-validator/user.js";
 
 import { validationResult } from "express-validator";
+import { error } from "jodit/types/core/helpers/index.js";
+import { getAllPostsByUserIdNoLimitation } from "../services/post.js";
 
 const userRouter = Router();
 
@@ -171,5 +175,40 @@ userRouter.post(
     }
   }
 );
+
+userRouter.get("/profile/:id", isAuthenticated(), async (req, res, next) => {
+  const { id } = req.params;
+  const loggedInUserId = req.user._id;
+
+  //1. Check if user exists
+  const isUserExisting = await userExixtsById(id);
+
+  if (!isUserExisting) {
+    return res.render("error_pages/404", {
+      errors: [{ msg: "User not found" }],
+    });
+  }
+
+  //2. Get user data and user posts using Promise.all
+  try {
+    const [userData, userPosts] = await Promise.all([
+      getAllUserData(id),
+      getAllPostsByUserIdNoLimitation(id),
+    ]);
+
+    const isOwner = loggedInUserId == userData._id;
+
+    console.log(userData);
+    console.log(userPosts);
+
+    res.render("user/profile", {
+      userData,
+      userPosts,
+      isOwner,
+    });
+  } catch (err) {
+    next(error);
+  }
+});
 
 export default userRouter;
