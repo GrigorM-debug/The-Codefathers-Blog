@@ -102,3 +102,19 @@ export async function newPasswordIsDifferentFromTheOldPassword(userData) {
 
   return isMatch;
 }
+
+export async function userExixtsById(userId) {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return false;
+  }
+
+  return true;
+}
+
+export async function getAllUserData(userId) {
+  const user = await User.findById(userId);
+
+  return user;
+}
