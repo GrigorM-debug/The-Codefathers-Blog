@@ -94,7 +94,7 @@
               {{else}}
                 <li class="position-relative">
                   <a
-                    class="text-white btn btn-success d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle"
+                    class="text-white btn btn-success d-flex align-items-center justify-content-center p-2 fs-4"
                     href="javascript:void(0)"
                   >
                     Follow
@@ -111,22 +111,22 @@
         role="tablist"
       >
         <li class="nav-item" role="presentation">
-          <button
+          <a
+            href="/profile/{{this.userData._id}}"
             class="nav-link position-relative rounded-0 active d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
             id="pills-profile-tab"
             data-bs-toggle="pill"
             data-bs-target="#pills-profile"
-            type="button"
-            role="tab"
             aria-controls="pills-profile"
             aria-selected="true"
           >
             <i class="fa-solid fa-blog"></i>
             <span class="d-none d-md-block"> Posts</span>
-          </button>
+          </a>
         </li>
         <li class="nav-item" role="presentation">
-          <button
+          <a
+            href=""
             class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
             id="pills-followers-tab"
             data-bs-toggle="pill"
@@ -139,10 +139,11 @@
           >
             <i class="fa fa-heart me-2 fs-6"></i>
             <span class="d-none d-md-block">Followers</span>
-          </button>
+          </a>
         </li>
         <li class="nav-item" role="presentation">
-          <button
+          <a
+            href=""
             class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
             id="pills-friends-tab"
             data-bs-toggle="pill"
@@ -155,7 +156,7 @@
           >
             <i class="fa fa-users me-2 fs-6"></i>
             <span class="d-none d-md-block">Following</span>
-          </button>
+          </a>
         </li>
       </ul>
     </div>
