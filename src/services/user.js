@@ -140,3 +140,23 @@ export async function getUserFollowingsByUserId(userId) {
 
   return followings;
 }
+
+//Check if user follows another user
+export async function checkIfUserFollowsAnotherUser(userId1, userId2) {
+  const isFollowing = await Follow.exists({
+    follower: userId1,
+    following: userId2,
+  });
+
+  return isFollowing;
+}
+
+//Current user follows another user
+export async function followUser(userId1, userId2) {
+  const newFollow = await Follow.create({
+    follower: userId1,
+    following: userId2,
+  });
+
+  await newFollow.save();
+}
