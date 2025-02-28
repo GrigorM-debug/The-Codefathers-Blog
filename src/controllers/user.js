@@ -310,7 +310,7 @@ userRouter.post(
         msg: "User successfully followed",
       };
 
-      res.redirect(`/profile/${loggedInUserId}/followings`);
+      res.redirect(`/profile/${currentUserId}/followings`);
     } catch (err) {
       next(err);
     }
