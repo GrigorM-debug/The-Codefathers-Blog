@@ -10,9 +10,9 @@
             <h2>{{post.title}}</h2>
             <div class="media">
               <div class="media-body">
-                <div class="avatar">
+                <a href="/profile/{{post.author._id}}" class="avatar">
                   <img src={{post.author.imageUrl}} alt="Aythor profile pic" />
-                </div>
+                </a>
                 <div>
                   <label>{{post.author.username}}</label>
                   <span>{{post.createdAt}}</span>
