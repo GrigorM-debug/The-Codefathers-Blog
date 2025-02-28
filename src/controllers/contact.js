@@ -9,7 +9,7 @@ contactRouter.get("/contact", (req, res) => {
   res.render("contact");
 });
 
-contactRouter.post("/contact", contactValidator, async (req, res) => {
+contactRouter.post("/contact", contactValidator, async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -20,11 +20,7 @@ contactRouter.post("/contact", contactValidator, async (req, res) => {
     await sendEmail(req.body);
     res.render("contact", { success: true, msg: "Email sent successfully !" });
   } catch (error) {
-    res.render("contact", {
-      errors: [{ msg: error }],
-      data: req.body,
-    });
-    return;
+    next(error);
   }
 });
 

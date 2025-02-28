@@ -27,7 +27,7 @@ postRouter.get("/posts", async (req, res) => {
 
 postRouter.get("/post/details/:_id", async (req, res, next) => {
   try {
-    const userId = req.user._id;
+    const userId = req?.user?._id;
 
     const post = await getPostByIdWithComments(req.params._id);
 
@@ -51,13 +51,19 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
 
     const authorPosts = await getAllPostsByUserId(post.author._id);
 
-    const isUserPostCreater = req.user && req.user._id == post.author._id;
+    let isUserPostCreater;
+    let isUserLikedPost;
+    let isUserPostCommentAuthor;
 
-    const isUserLikedPost = await likeExistsByUserIdAndPostId(userId, post._id);
+    if (userId) {
+      isUserPostCreater = req.user && req.user._id == post.author._id;
 
-    const isUserPostCommentAuthor = post.comments.some(
-      (c) => c.author._id == userId
-    );
+      isUserLikedPost = await likeExistsByUserIdAndPostId(userId, post._id);
+
+      isUserPostCommentAuthor = post.comments.some(
+        (c) => c.author._id == userId
+      );
+    }
 
     post.comments.forEach((comment) => {
       comment.isUserPostCommentAuthor = isUserPostCommentAuthor;

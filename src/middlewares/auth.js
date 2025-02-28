@@ -14,6 +14,7 @@ export default function auth() {
       res.locals.isAuthenticated = true;
       res.locals.username = decoded.username;
       res.locals.imageUrl = decoded.imageUrl;
+      res.locals.userId = decoded._id;
 
       next();
     } catch (error) {

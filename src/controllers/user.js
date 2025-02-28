@@ -18,7 +18,6 @@ import {
 } from "../express-validator/user.js";
 
 import { validationResult } from "express-validator";
-import { error } from "jodit/types/core/helpers/index.js";
 import { getAllPostsByUserIdNoLimitation } from "../services/post.js";
 
 const userRouter = Router();
@@ -60,7 +59,7 @@ userRouter.post(
 
       res.cookie("token", token, {
         httpOnly: true,
-        secure: true,
+        // secure: true,
         maxAge: 2 * 24 * 60 * 60 * 1000,
       });
 
@@ -111,9 +110,10 @@ userRouter.post("/login", isGuest(), loginValidator, async (req, res, next) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
+
     res.redirect("/");
   } catch (error) {
     next(error);
@@ -198,13 +198,18 @@ userRouter.get("/profile/:id", isAuthenticated(), async (req, res, next) => {
 
     const isOwner = loggedInUserId == userData._id;
 
-    console.log(userData);
+    let isFollowed = false;
+    if (!isOwner) {
+      isFollowed = userData.followers.includes(loggedInUserId);
+    }
+
     console.log(userPosts);
 
     res.render("user/profile", {
       userData,
       userPosts,
       isOwner,
+      isFollowed,
     });
   } catch (err) {
     next(error);

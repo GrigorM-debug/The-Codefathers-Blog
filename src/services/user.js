@@ -114,7 +114,9 @@ export async function userExixtsById(userId) {
 }
 
 export async function getAllUserData(userId) {
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).lean();
+
+  user.createdAt = user.createdAt.toLocaleString();
 
   return user;
 }
