@@ -52,7 +52,8 @@
               </div>
             </div>
             <div class="text-center">
-              <h5 class="fs-2 mb-0 fw-semibold mt-2">{{this.userData.username}}</h5>
+              <h5 class="fs-2 mb-0 fw-semibold mt-2">Username: {{this.userData.username}}</h5>
+              <h5 class="fs-4 mb-0 fw-semibold mt-2">Email: {{this.userData.email}}</h5>
               <p class="mb-0 fs-5 mt-4">{{this.userData.description}}</p>
               <p class="mb-0 fs-6 mt-4">Joined on: {{this.userData.createdAt}}</p>
             </div>
@@ -66,39 +67,35 @@
               <li class="position-relative">
                 <a
                   class="text-white btn btn-success d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle"
-                  href="javascript:void(0)"
+                  href=""
                   width="30"
                   height="30"
                 >
                   <i class="fa-solid fa-pen-to-square"></i>
                 </a>
               </li>
-              <li class="position-relative">
-                <a
-                  class="text-white btn btn-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle"
-                  href="javascript:void(0)"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </a>
-              </li>
             {{else}}
               {{#if this.isFollowed}}
                 <li class="position-relative">
-                  <a
-                    class="text-white btn btn-outline-success d-flex align-items-center justify-content-center p-2 fs-4"
-                    href="javascript:void(0)"
-                  >
-                    <i class="fa fa-dribbble"></i>
-                  </a>
+                    <form action="unfollow/user/{{this.userData._id}}" method="post">
+                        <button
+                            type="submit"
+                            class="text-success btn btn-outline-success d-flex align-items-center justify-content-center p-2 fs-4"
+                        >
+                            Unfollow
+                        </button>
+                    </form>
                 </li>
               {{else}}
                 <li class="position-relative">
-                  <a
-                    class="text-white btn btn-success d-flex align-items-center justify-content-center p-2 fs-4"
-                    href="javascript:void(0)"
-                  >
-                    Follow
-                  </a>
+                    <form action="/follow/user/{{this.userData._id}}" method="post">
+                        <button
+                            type="submit"
+                            class="text-white btn btn-success d-flex align-items-center justify-content-center p-2 fs-4"
+                        >
+                            Follow
+                        </button>
+                    </form>
                 </li>
               {{/if}}
             {{/if}}
@@ -113,12 +110,7 @@
         <li class="nav-item" role="presentation">
           <a
             href="/profile/{{this.userData._id}}"
-            class="nav-link position-relative rounded-0 active d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
-            id="pills-profile-tab"
-            data-bs-toggle="pill"
-            data-bs-target="#pills-profile"
-            aria-controls="pills-profile"
-            aria-selected="true"
+            class="{{#if showPostsSectionHandler}}active{{/if}} nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
           >
             <i class="fa-solid fa-blog"></i>
             <span class="d-none d-md-block"> Posts</span>
@@ -126,16 +118,8 @@
         </li>
         <li class="nav-item" role="presentation">
           <a
-            href=""
-            class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
-            id="pills-followers-tab"
-            data-bs-toggle="pill"
-            data-bs-target="#pills-followers"
-            type="button"
-            role="tab"
-            aria-controls="pills-followers"
-            aria-selected="false"
-            tabindex="-1"
+            href="/profile/{{this.userData._id}}/followers"
+            class="{{#if showFollowersSectionHandler}}active{{/if}} nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
           >
             <i class="fa fa-heart me-2 fs-6"></i>
             <span class="d-none d-md-block">Followers</span>
@@ -143,26 +127,24 @@
         </li>
         <li class="nav-item" role="presentation">
           <a
-            href=""
-            class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
-            id="pills-friends-tab"
-            data-bs-toggle="pill"
-            data-bs-target="#pills-friends"
-            type="button"
-            role="tab"
-            aria-controls="pills-friends"
-            aria-selected="false"
-            tabindex="-1"
+            href="/profile/{{this.userData._id}}/followings"
+            class="{{#if showFollowingsSectionHandler}}active{{/if}} nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
           >
             <i class="fa fa-users me-2 fs-6"></i>
-            <span class="d-none d-md-block">Following</span>
+            <span class="d-none d-md-block">Followings</span>
           </a>
         </li>
       </ul>
     </div>
   </div>
 
-  {{! Posts }}
-    {{> user_posts this.userPosts}}
-  {{! Posts End}}
+  {{#if this.showFollowersSectionHandler}}
+    {{> followers_section this.followers}}
+  {{/if}}
+  {{#if this.showFollowingsSectionHandler}}
+    {{> followings_section this.followings}}
+  {{/if}}
+    {{#if this.showPostsSectionHandler}}
+        {{> user_posts this.userPosts}}
+    {{/if}}
 </div>

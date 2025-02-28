@@ -9,9 +9,11 @@
                     <div class="card-body p-4 d-flex align-items-center gap-3">
                     <img src="{{this.following.imageUrl}}" alt="" class="rounded-circle" width="40" height="40">
                     <div>
-                        <h5 class="fw-semibold mb-0">{{this.following.username}}</h5>
+                        <a href="/profile/{{this.following._id}}" class="h5 text-success fw-semibold mb-0">{{this.following.username}}</a>
                     </div>
-                    <a href="unfollow/user/{{this.following._id}}" class="btn btn-outline-success py-1 px-2 ms-auto">Unfollow</a>
+                    <form action="/unfollow/user/{{this.following._id}}" method="post">
+                        <button type="submit" class="btn btn-outline-success py-1 px-2 ms-auto">Unfollow</button>
+                    </form>
                     </div>
                 </div>
             </div>

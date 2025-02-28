@@ -160,3 +160,11 @@ export async function followUser(userId1, userId2) {
 
   await newFollow.save();
 }
+
+//Current user unfollows another user
+export async function unfollowUser(userId1, userId2) {
+  await Follow.deleteOne({
+    follower: userId1,
+    following: userId2,
+  });
+}

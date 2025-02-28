@@ -10,6 +10,11 @@ import {
   userExistByUsername,
   userExixtsById,
   getAllUserData,
+  getUserFollowersByUserId,
+  checkIfUserFollowsAnotherUser,
+  followUser,
+  getUserFollowingsByUserId,
+  unfollowUser,
 } from "../services/user.js";
 import {
   registerValidator,
@@ -180,6 +185,9 @@ userRouter.get("/profile/:id", isAuthenticated(), async (req, res, next) => {
   const { id } = req.params;
   const loggedInUserId = req.user._id;
 
+  const errors = req.session.errors || [];
+  delete req.session.errors;
+
   //1. Check if user exists
   const isUserExisting = await userExixtsById(id);
 
@@ -198,22 +206,226 @@ userRouter.get("/profile/:id", isAuthenticated(), async (req, res, next) => {
 
     const isOwner = loggedInUserId == userData._id;
 
+    const followers = req.session.followers || [];
+
     let isFollowed = false;
     if (!isOwner) {
-      isFollowed = userData.followers.includes(loggedInUserId);
+      const isFollowedObj = await checkIfUserFollowsAnotherUser(
+        loggedInUserId,
+        id
+      );
+      if (isFollowedObj) {
+        isFollowed = true;
+      }
     }
 
-    console.log(userPosts);
+    let showPostsSectionHandler = true;
+
+    let showFollowersSectionHandler;
+
+    if (
+      req.session.showFollowersSection &&
+      req.session.showFollowersSection === true
+    ) {
+      showFollowersSectionHandler = true;
+      showPostsSectionHandler = false;
+    } else {
+      showFollowersSectionHandler = false;
+      // showPostsSectionHandler = true;
+    }
+
+    delete req.session.showFollowersSection;
+
+    const followings = req.session.followings || [];
+
+    let showFollowingsSectionHandler;
+
+    if (
+      req.session.showFollowingsSection &&
+      req.session.showFollowingsSection === true
+    ) {
+      showFollowingsSectionHandler = true;
+      showPostsSectionHandler = false;
+    } else {
+      showFollowingsSectionHandler = false;
+      // showPostsSectionHandler = true;
+    }
+
+    delete req.session.showFollowingsSection;
 
     res.render("user/profile", {
       userData,
       userPosts,
       isOwner,
       isFollowed,
+      followers,
+      errors,
+      showFollowersSectionHandler,
+      showPostsSectionHandler,
+      followings,
+      showFollowingsSectionHandler,
     });
   } catch (err) {
     next(error);
   }
 });
+
+//One user follows another user
+userRouter.post(
+  "/follow/user/:id",
+  isAuthenticated(),
+  async (req, res, next) => {
+    //The id of the user that current user want to follow
+    const { id } = req.params;
+    const currentUserId = req.user._id;
+
+    //Check if current user id and another user id are the same
+    if (id == currentUserId) {
+      req.session.errors = [{ msg: "You can't follow yourself" }];
+      return res.redirect(`/profile/${id}`);
+    }
+
+    //Check if another user exists
+    const isUserExisting = await userExixtsById(id);
+
+    if (!isUserExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "User not found" }],
+      });
+    }
+
+    //Check if current user already followed the another user
+    const isFollowing = await checkIfUserFollowsAnotherUser(currentUserId, id);
+
+    if (isFollowing) {
+      req.session.errors = [{ msg: "You already followed this user" }];
+      return res.redirect(`/profile/${id}`);
+    }
+
+    try {
+      await followUser(currentUserId, id);
+
+      req.session.successMessage = {
+        success: true,
+        msg: "User successfully followed",
+      };
+
+      res.redirect(`/profile/${loggedInUserId}/followings`);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+//One user unfollows other user
+userRouter.post(
+  "/unfollow/user/:id",
+  isAuthenticated(),
+  async (req, res, next) => {
+    //The id of the user that current user want to follow
+    const { id } = req.params;
+    const currentUserId = req.user._id;
+
+    //Check if current user id and another user id are the same
+    if (id == currentUserId) {
+      req.session.errors = [{ msg: "You can't unfollow yourself" }];
+      return res.redirect(`/profile/${id}`);
+    }
+
+    //Check if another user exists
+    const isUserExisting = await userExixtsById(id);
+
+    if (!isUserExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "User not found" }],
+      });
+    }
+
+    //Check if current user following the another user
+    const isFollowing = await checkIfUserFollowsAnotherUser(currentUserId, id);
+
+    if (!isFollowing) {
+      req.session.errors = [
+        { msg: "You can't unfollow user that you are not following" },
+      ];
+      return res.redirect(`/profile/${id}`);
+    }
+
+    try {
+      await unfollowUser(currentUserId, id);
+
+      req.session.successMessage = {
+        success: true,
+        msg: "User successfully unfollowed",
+      };
+
+      res.redirect(`/profile/${currentUserId}/followings`);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+//Get user followers
+userRouter.get(
+  "/profile/:id/followers",
+  isAuthenticated(),
+  async (req, res, next) => {
+    const { id } = req.params;
+
+    //Check if user exists
+    const isUserExisting = await userExixtsById(id);
+
+    if (!isUserExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "User not found" }],
+      });
+    }
+
+    //Get user followers
+    try {
+      const followers = await getUserFollowersByUserId(id);
+
+      req.session.followers = followers;
+
+      req.session.showFollowersSection = true;
+
+      res.redirect(`/profile/${id}`);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+//Get user followings
+userRouter.get(
+  "/profile/:id/followings",
+  isAuthenticated(),
+  async (req, res, next) => {
+    const { id } = req.params;
+
+    //Check if user exists
+    const isUserExisting = await userExixtsById(id);
+
+    if (!isUserExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "User not found" }],
+      });
+    }
+
+    //Get user followings
+    try {
+      const followings = await getUserFollowingsByUserId(id);
+
+      req.session.followings = followings;
+
+      req.session.showFollowingsSection = true;
+
+      res.redirect(`/profile/${id}`);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 export default userRouter;
