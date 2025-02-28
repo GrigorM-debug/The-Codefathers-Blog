@@ -1,0 +1,21 @@
+<div class="tab-pane fade show active" id="pills-followers" role="tabpanel" aria-labelledby="pills-followers-tab" tabindex="0">
+      <div class="d-sm-flex align-items-center justify-content-between mt-3 mb-4">
+        <h3 class="mb-3 mb-sm-0 fw-semibold d-flex align-items-center">Followers <span class="badge text-bg-secondary fs-2 rounded-4 py-1 px-2 ms-2">{{this.length}}</span></h3>
+      </div>
+      <div class="row">
+        {{#each this}}
+            <div class=" col-md-6 col-xl-4">
+                <div class="card hover-img overflow-hidden rounded-2">
+                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                    <img src="{{this.follower.imageUrl}}" alt="" class="rounded-circle" width="40" height="40">
+                    <div>
+                        <h5 class="fw-semibold mb-0">{{this.follower.username}}</h5>
+                    </div>
+                    <a href="follow/user/{{this.follower._id}}" class="btn btn-success py-1 px-2 ms-auto">Follow Back</a>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
