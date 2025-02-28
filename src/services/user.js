@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
+import Follow from "../models/Follow.js";
+
 import { generateToken } from "./jwt.js";
 
 export async function userExists(userData) {
@@ -119,4 +121,22 @@ export async function getAllUserData(userId) {
   user.createdAt = user.createdAt.toLocaleString();
 
   return user;
+}
+
+// Retrieve followers of a user
+export async function getUserFollowersByUserId(userId) {
+  const followers = await Follow.find({ following: userId })
+    .populate("follower")
+    .lean();
+
+  return followers;
+}
+
+// Retrieve users a user is following
+export async function getUserFollowingsByUserId(userId) {
+  const followings = await Follow.find({ follower: userId })
+    .populate("following")
+    .lean();
+
+  return followings;
 }
