@@ -1,0 +1,167 @@
+<div class="container">
+  <div class="card overflow-hidden">
+    <div class="card-body p-0">
+      <img
+        src="/images/profile_cover.png"
+        alt=""
+        class="img-fluid"
+      />
+      <div class="row align-items-center">
+        <div class="col-lg-4 order-lg-1 order-2">
+          <div class="d-flex align-items-center justify-content-around m-4">
+            <div class="text-center">
+              <i class="fa fa-file fs-6 d-block mb-2"></i>
+              <h4 class="mb-0 fw-semibold lh-1">{{this.userPosts.length}}</h4>
+              <p class="mb-0 fs-4">Posts</p>
+            </div>
+            <div class="text-center">
+              <i class="fa fa-user fs-6 d-block mb-2"></i>
+              <h4
+                class="mb-0 fw-semibold lh-1"
+              >{{this.userData.followers.length}}</h4>
+              <p class="mb-0 fs-4">Followers</p>
+            </div>
+            <div class="text-center">
+              <i class="fa fa-check fs-6 d-block mb-2"></i>
+              <h4
+                class="mb-0 fw-semibold lh-1"
+              >{{this.userData.following.length}}</h4>
+              <p class="mb-0 fs-4">Following</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mt-n3 order-lg-2 order-1">
+          <div class="mt-n5">
+            <div class="d-flex align-items-center justify-content-center mb-2">
+              <div
+                class="linear-gradient d-flex align-items-center justify-content-center rounded-circle"
+                style="width: 110px; height: 110px;"
+                ;=""
+              >
+                <div
+                  class="border border-4 border-white d-flex align-items-center justify-content-center rounded-circle overflow-hidden"
+                  style="width: 100px; height: 100px;"
+                  ;=""
+                >
+                  <img
+                    src={{this.userData.imageUrl}}
+                    alt=""
+                    class="w-100 h-100"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="text-center">
+              <h5 class="fs-2 mb-0 fw-semibold mt-2">{{this.userData.username}}</h5>
+              <p class="mb-0 fs-5 mt-4">{{this.userData.description}}</p>
+              <p class="mb-0 fs-6 mt-4">Joined on: {{this.userData.createdAt}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 order-last">
+          <ul
+            class="list-unstyled d-flex align-items-center justify-content-center  my-3 gap-3"
+          >
+            {{#if this.isOwner}}
+              <li class="position-relative">
+                <a
+                  class="text-white btn btn-success d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle"
+                  href="javascript:void(0)"
+                  width="30"
+                  height="30"
+                >
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+              </li>
+              <li class="position-relative">
+                <a
+                  class="text-white btn btn-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle"
+                  href="javascript:void(0)"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </a>
+              </li>
+            {{else}}
+              {{#if this.isFollowed}}
+                <li class="position-relative">
+                  <a
+                    class="text-white btn btn-outline-success d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle"
+                    href="javascript:void(0)"
+                  >
+                    <i class="fa fa-dribbble"></i>
+                  </a>
+                </li>
+              {{else}}
+                <li class="position-relative">
+                  <a
+                    class="text-white btn btn-success d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle"
+                    href="javascript:void(0)"
+                  >
+                    Follow
+                  </a>
+                </li>
+              {{/if}}
+            {{/if}}
+          </ul>
+        </div>
+      </div>
+      <ul
+        class="nav nav-pills user-profile-tab justify-content-end mt-2 bg-light-info rounded-2"
+        id="pills-tab"
+        role="tablist"
+      >
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link position-relative rounded-0 active d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
+            id="pills-profile-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#pills-profile"
+            type="button"
+            role="tab"
+            aria-controls="pills-profile"
+            aria-selected="true"
+          >
+            <i class="fa-solid fa-blog"></i>
+            <span class="d-none d-md-block"> Posts</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
+            id="pills-followers-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#pills-followers"
+            type="button"
+            role="tab"
+            aria-controls="pills-followers"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            <i class="fa fa-heart me-2 fs-6"></i>
+            <span class="d-none d-md-block">Followers</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
+            id="pills-friends-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#pills-friends"
+            type="button"
+            role="tab"
+            aria-controls="pills-friends"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            <i class="fa fa-users me-2 fs-6"></i>
+            <span class="d-none d-md-block">Following</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  {{! Posts }}
+    {{> user_posts this.userPosts}}
+  {{! Posts End}}
+</div>

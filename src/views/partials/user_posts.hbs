@@ -1,0 +1,36 @@
+<div class="tab-pane fade show active" id="pills-gallery" role="tabpanel" aria-labelledby="pills-gallery-tab" tabindex="0">
+      <div class="d-sm-flex align-items-center justify-content-between mt-3 mb-4">
+        <h3 class="mb-3 mb-sm-0 fw-semibold d-flex align-items-center">Posts <span class="badge text-bg-secondary fs-2 rounded-4 py-1 px-2 ms-2">{{this.length}}</span></h3>
+        {{!-- <form class="position-relative">
+          <input type="text" class="form-control search-chat py-2 ps-5" id="text-srh" placeholder="Search Friends">
+          <i class="ti ti-search position-absolute top-50 start-0 translate-middle-y text-dark ms-3"></i>
+        </form> --}}
+      </div>
+      <div class="row">
+        {{#each this}}
+            <div class="col-md-6 col-lg-4">
+                <div class="card hover-img overflow-hidden rounded-2">
+                    <div class="card-body p-0">
+                    <img src="{{this.bannnerImageUrl}}" alt="" class="img-fluid w-100 object-fit-cover" style="height: 220px;">
+                    <div class="p-4 d-flex align-items-center justify-content-between">
+                        <div>
+                        <a href="/post/details/{{this._id}}" class="text-success fw-semibold mb-0 fs-4">{{this.title}}</a>
+                        <br>
+                        <span class="text-dark fs-6">Created at: {{this.createdAt}}</span>
+                        </div>
+                        <div class="dropdown">
+                            <a class="text-muted fw-semibold d-flex align-items-center p-1" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ti ti-dots-vertical"></i>
+                            </a>
+                            <ul class="dropdown-menu overflow-hidden">
+                                <li><a class="dropdown-item" href="javascript:void(0)">Povipvez marjelliz zuuva.jpg</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
