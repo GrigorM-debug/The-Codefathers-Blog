@@ -15,6 +15,7 @@ import {
   followUser,
   getUserFollowingsByUserId,
   unfollowUser,
+  getUserFollowingsIdsByUserId,
 } from "../services/user.js";
 import {
   registerValidator,
@@ -23,7 +24,10 @@ import {
 } from "../express-validator/user.js";
 
 import { validationResult } from "express-validator";
-import { getAllPostsByUserIdNoLimitation } from "../services/post.js";
+import {
+  getAllPostsByUserIdNoLimitation,
+  getFollowingsPosts,
+} from "../services/post.js";
 
 const userRouter = Router();
 
@@ -427,5 +431,25 @@ userRouter.get(
     }
   }
 );
+
+//Get the posts of the users that current user is following
+userRouter.get("/following", isAuthenticated(), async (req, res, next) => {
+  const currentUserId = req.user._id;
+
+  try {
+    const currentUserFollowings =
+      await getUserFollowingsIdsByUserId(currentUserId);
+
+    let followingsPosts = [];
+
+    if (currentUserFollowings) {
+      followingsPosts = await getFollowingsPosts(currentUserFollowings);
+    }
+
+    res.render("post/following", { followingsPosts });
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default userRouter;

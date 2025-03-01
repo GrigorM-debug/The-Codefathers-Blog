@@ -168,3 +168,12 @@ export async function unfollowUser(userId1, userId2) {
     following: userId2,
   });
 }
+
+//Get user followings ids
+export async function getUserFollowingsIdsByUserId(userId) {
+  const followings = await Follow.find({ follower: userId })
+    .select("following")
+    .lean();
+
+  return followings;
+}

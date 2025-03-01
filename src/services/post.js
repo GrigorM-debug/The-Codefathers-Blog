@@ -165,3 +165,20 @@ export async function updateCommentsCollectionInPostSchemaWhenDeletingComment(
     await post.save();
   }
 }
+
+//Get the posts of the users that current user is following
+export async function getFollowingsPosts(followingsIdArr) {
+  //ThefollowingsIdArr contains _id and following. We need only following.
+  const follwingsIds = followingsIdArr.map((f) => f.following);
+  const followingsPosts = await Post.find({
+    author: { $in: follwingsIds },
+  })
+    .populate("author")
+    .lean();
+
+  followingsPosts.forEach((p) => {
+    p.createdAt = p.createdAt.toLocaleString();
+  });
+
+  return followingsPosts;
+}
