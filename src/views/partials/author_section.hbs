@@ -5,13 +5,15 @@
   <div class="widget-body align-items-center">
     <div class="media">
       <div class="avatar">
-        <img src={{this.imageUrl}} alt="Author profile pic" />
+        <a href="/profile/{{this._id}}">
+          <img src={{this.imageUrl}} alt="Author profile pic" />
+        </a>
       </div>
       <div class="media-body">
         <h6>Hello, I'm {{this.username}}</h6>
       </div>
     </div>
-    <p><strong>Joined:</strong> {{this.createdAt}}</p>
+    <p><strong>Joined On:</strong> {{this.createdAt}}</p>
     <p><strong>Description:</strong> {{this.description}}</p>
   </div>
 </div>
