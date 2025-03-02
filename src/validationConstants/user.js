@@ -26,8 +26,41 @@ export const userValidationConstants = {
     requiredErrorMessage: "Image URL is required !",
     lengthErrorMessage:
       "Image URL must be between 3 and 5000 characters long !",
-    /*imageUrlRegex:
-      /(http[s]?:\/\/.*\.(?:png|jpg|gif|svg|jpeg))/i,8*/
+    imageUrlRegex: /(http[s]?:\/\/.*\.(?:png|jpg|gif|svg|jpeg))/i,
+    imageUrlErrorMessage: "Image URL must be a valid image URL !",
+  },
+  description: {
+    minLength: 10,
+    maxLength: 200,
+    requiredErrorMessage: "Description is required !",
+    lengthErrorMessage:
+      "Description must be between 10 and 200 characters long !",
+  },
+};
+
+export const userEditValidations = {
+  username: {
+    minLength: 3,
+    maxLength: 20,
+    requiredErrorMessage: "Username is required !",
+    lengthErrorMessage: "Username must be between 3 and 20 characters long !",
+  },
+  email: {
+    minLength: 5,
+    maxLength: 100,
+    lengthErrorMessage: "Email must be between 5 and 100 characters long !",
+    requiredErrorMessage: "Email is required !",
+    emailRegex:
+      /^([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+")@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    emailErrorMessage: "Email must be a valid email address !",
+  },
+  imageUrl: {
+    minLength: 3,
+    maxLength: 5000,
+    requiredErrorMessage: "Image URL is required !",
+    lengthErrorMessage:
+      "Image URL must be between 3 and 5000 characters long !",
+    imageUrlRegex: /(http[s]?:\/\/.*\.(?:png|jpg|gif|svg|jpeg))/i,
     imageUrlErrorMessage: "Image URL must be a valid image URL !",
   },
   description: {

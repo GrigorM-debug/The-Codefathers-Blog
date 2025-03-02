@@ -1,5 +1,8 @@
 import { body } from "express-validator";
-import { userValidationConstants } from "../validationConstants/user.js";
+import {
+  userEditValidations,
+  userValidationConstants,
+} from "../validationConstants/user.js";
 
 export const registerValidator = [
   body("username")
@@ -125,4 +128,45 @@ export const changePasswordValidator = [
       return value === req.body.newPassword;
     })
     .withMessage("Passwords do not match !"),
+];
+
+export const editValidator = [
+  body("username")
+    .trim()
+    .notEmpty()
+    .withMessage(userEditValidations.username.requiredErrorMessage)
+    .isLength({
+      min: userEditValidations.username.minLength,
+      max: userEditValidations.username.maxLength,
+    })
+    .withMessage(userEditValidations.username.lengthErrorMessage),
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage(userEditValidations.email.requiredErrorMessage)
+    .isEmail()
+    .withMessage(userEditValidations.email.emailErrorMessage)
+    .matches(userEditValidations.email.emailRegex)
+    .withMessage(userEditValidations.email.emailErrorMessage),
+  body("imageUrl")
+    .trim()
+    .notEmpty()
+    .withMessage(userEditValidations.imageUrl.requiredErrorMessage)
+    .isLength({
+      min: userEditValidations.imageUrl.minLength,
+      max: userEditValidations.imageUrl.maxLength,
+    })
+    .matches(userEditValidations.imageUrl.imageUrlRegex)
+    .withMessage(userEditValidations.imageUrl.imageUrlErrorMessage)
+    .withMessage(userEditValidations.imageUrl.lengthErrorMessage),
+  body("description")
+    .trim()
+    .notEmpty()
+    .isString()
+    .withMessage(userEditValidations.description.requiredErrorMessage)
+    .isLength({
+      min: userEditValidations.description.minLength,
+      max: userEditValidations.description.maxLength,
+    })
+    .withMessage(userEditValidations.description.lengthErrorMessage),
 ];
