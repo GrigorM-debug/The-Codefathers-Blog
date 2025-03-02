@@ -12,7 +12,7 @@
 
                 <form
                   class="mx-1 mx-md-4"
-                  action="/edit_profile/:id"
+                  action="/edit_profile/{{userData._id}}"
                   method="post"
                 >
 
@@ -75,7 +75,7 @@
                         rows="4"
                         class="form-control"
                         value="{{userData.description}}"
-                      ></textarea>
+                      >{{userData.description}}</textarea>
                     </div>
                   </div>
 

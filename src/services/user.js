@@ -177,3 +177,7 @@ export async function getUserFollowingsIdsByUserId(userId) {
 
   return followings;
 }
+
+export async function updateUser(userId, userData) {
+  await User.findByIdAndUpdate(userId, userData);
+}

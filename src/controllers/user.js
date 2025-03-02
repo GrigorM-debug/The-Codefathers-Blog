@@ -16,6 +16,7 @@ import {
   getUserFollowingsByUserId,
   unfollowUser,
   getUserFollowingsIdsByUserId,
+  updateUser,
 } from "../services/user.js";
 import {
   registerValidator,
@@ -28,6 +29,7 @@ import {
   getAllPostsByUserIdNoLimitation,
   getFollowingsPosts,
 } from "../services/post.js";
+import { editValidator } from "../express-validator/user.js";
 
 const userRouter = Router();
 
@@ -451,5 +453,71 @@ userRouter.get("/following", isAuthenticated(), async (req, res, next) => {
     next(err);
   }
 });
+
+//Edit user profile Get
+userRouter.get(
+  "/edit_profile/:id",
+  isAuthenticated(),
+  async (req, res, next) => {
+    const { id } = req.params;
+
+    //1. Check if user exists
+    const isUserExisting = await userExixtsById(id);
+
+    if (!isUserExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "User not found" }],
+      });
+    }
+
+    try {
+      //2. Get the user data
+      const userData = await getAllUserData(id);
+
+      //3. Send the data to the view
+      res.render("user/edit_profile", { userData });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+//Edit user profile Post
+userRouter.post(
+  "/edit_profile/:id",
+  isAuthenticated(),
+  editValidator,
+  async (req, res, next) => {
+    const { id } = req.params;
+
+    //1. Check if user exists
+    const isUserExisting = await userExixtsById(id);
+    if (!isUserExisting) {
+      return res.render("error_pages/404", {
+        errors: [{ msg: "User not found" }],
+      });
+    }
+
+    //3. Validate the form data
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.render("user/edit_profile", {
+        errors: errors.array(),
+        userData: req.body,
+      });
+    }
+
+    //4. Update the user data
+    //5. Redirect to the profile page
+    try {
+      await updateUser(id, req.body);
+
+      res.redirect(`/profile/${id}`);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 export default userRouter;
