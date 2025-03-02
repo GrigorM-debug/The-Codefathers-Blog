@@ -10,6 +10,7 @@
 
         <div class="contact">
           <form class="form" name="enq" method="post" action="/contact">
+            <input type="hidden" name="_csrf" value="{{this.csrfToken}}" />
             <div class="row">
               <div class="form-group col-md-6">
                 <label for="name">Name</label>
