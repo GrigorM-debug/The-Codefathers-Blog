@@ -31,15 +31,28 @@ import {
 } from "../services/post.js";
 import { editValidator } from "../express-validator/user.js";
 
+import { csrfSync } from "csrf-sync";
+
+const { generateToken } = csrfSync();
+
+const { csrfSynchronisedProtection } = csrfSync({
+  getTokenFromRequest: (req) => {
+    console.log(req.body._csrf);
+    return req.body["_csrf"];
+  }, // Used to retrieve the token submitted by the user in a form
+});
+
 const userRouter = Router();
 
 userRouter.get("/register", isGuest(), (req, res) => {
-  res.render("user/register");
+  const csrfToken = generateToken(req, true);
+  res.render("user/register", { csrfToken });
 });
 
 userRouter.post(
   "/register",
   isGuest(),
+  csrfSynchronisedProtection,
   registerValidator,
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -82,66 +95,79 @@ userRouter.post(
 );
 
 userRouter.get("/login", isGuest(), (req, res) => {
-  res.render("user/login");
+  const csrfToken = generateToken(req, true);
+  res.render("user/login", { csrfToken });
 });
 
-userRouter.post("/login", isGuest(), loginValidator, async (req, res, next) => {
-  const errors = validationResult(req);
+userRouter.post(
+  "/login",
+  isGuest(),
+  csrfSynchronisedProtection,
+  loginValidator,
+  async (req, res, next) => {
+    const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.render("user/login", { errors: errors.array(), data: req.body });
-  }
-
-  try {
-    const userData = {
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-    };
-
-    const userExist = await userExists(userData);
-
-    if (!userExist) {
+    if (!errors.isEmpty()) {
       return res.render("user/login", {
-        errors: [{ msg: "User doesn't exist" }],
+        errors: errors.array(),
         data: req.body,
       });
     }
 
-    const isPasswordValidBoolean = await isPasswordValid(userData);
+    try {
+      const userData = {
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+      };
 
-    if (!isPasswordValidBoolean) {
-      return res.render("user/login", {
-        errors: [{ msg: "Wrong password" }],
-        data: req.body,
+      const userExist = await userExists(userData);
+
+      if (!userExist) {
+        return res.render("user/login", {
+          errors: [{ msg: "User doesn't exist" }],
+          data: req.body,
+        });
+      }
+
+      const isPasswordValidBoolean = await isPasswordValid(userData);
+
+      if (!isPasswordValidBoolean) {
+        return res.render("user/login", {
+          errors: [{ msg: "Wrong password" }],
+          data: req.body,
+        });
+      }
+
+      const token = await login(req.body);
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        // secure: true,
+        maxAge: 2 * 24 * 60 * 60 * 1000,
       });
+
+      res.redirect("/");
+    } catch (error) {
+      next(error);
     }
-
-    const token = await login(req.body);
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      // secure: true,
-      maxAge: 2 * 24 * 60 * 60 * 1000,
-    });
-
-    res.redirect("/");
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 userRouter.get("/logout", isAuthenticated(), (req, res) => {
   res.clearCookie("token");
   res.redirect("/");
 });
 
-userRouter.get("/changing-password", (req, res) => {
-  res.render("user/changing-password");
+userRouter.get("/changing-password", isGuest(), (req, res) => {
+  const csrfToken = generateToken(req, true);
+  res.render("user/changing-password", { csrfToken });
 });
 
 userRouter.post(
   "/changing-password",
+  isGuest(),
+  csrfSynchronisedProtection,
   changePasswordValidator,
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -475,7 +501,8 @@ userRouter.get(
       const userData = await getAllUserData(id);
 
       //3. Send the data to the view
-      res.render("user/edit_profile", { userData });
+      const csrfToken = generateToken(req, true);
+      res.render("user/edit_profile", { userData, csrfToken });
     } catch (err) {
       next(err);
     }
@@ -486,6 +513,7 @@ userRouter.get(
 userRouter.post(
   "/edit_profile/:id",
   isAuthenticated(),
+  csrfSynchronisedProtection,
   editValidator,
   async (req, res, next) => {
     const { id } = req.params;

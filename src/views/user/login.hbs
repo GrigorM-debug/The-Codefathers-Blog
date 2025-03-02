@@ -12,7 +12,11 @@
                 >Login</p>
 
                 <form class="mx-1 mx-md-4" action="/login" method="post">
-
+                  <input
+                    type="hidden"
+                    name="_csrf"
+                    value="{{this.csrfToken}}"
+                  />
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div
