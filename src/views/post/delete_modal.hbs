@@ -12,6 +12,7 @@
           class="btn btn-secondary fw-bold"
         >Cancel</a>
         <form action="/post/delete/{{post._id}}" method="POST">
+          <input type="hidden" name="_csrf" value="{{this.csrfToken}}" />
           <button type="submit" class="btn btn-danger fw-bold">Delete</button>
         </form>
       </div>

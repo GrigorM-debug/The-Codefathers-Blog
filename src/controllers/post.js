@@ -14,6 +14,16 @@ import {
   updatePost,
 } from "../services/post.js";
 import { likeExistsByUserIdAndPostId } from "../services/like.js";
+import { csrfSync } from "csrf-sync";
+
+const { generateToken } = csrfSync();
+
+const { csrfSynchronisedProtection } = csrfSync({
+  getTokenFromRequest: (req) => {
+    console.log(req.body._csrf);
+    return req.body["_csrf"];
+  }, // Used to retrieve the token submitted by the user in a form
+});
 
 const postRouter = Router();
 
@@ -85,12 +95,14 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
 });
 
 postRouter.get("/create", isAuthenticated(), (req, res) => {
-  res.render("post/create");
+  const csrfToken = generateToken(req, true);
+  res.render("post/create", { csrfToken });
 });
 
 postRouter.post(
   "/create",
   isAuthenticated(),
+  csrfSynchronisedProtection,
   postValidator,
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -147,7 +159,9 @@ postRouter.get(
         return res.redirect(`/post/details/${id}`);
       }
 
-      res.render("post/delete_modal", { post: post });
+      const csrfToken = generateToken(req, true);
+
+      res.render("post/delete_modal", { post: post, csrfToken });
     } catch (err) {
       next(err);
     }
@@ -157,6 +171,7 @@ postRouter.get(
 postRouter.post(
   "/post/delete/:id",
   isAuthenticated(),
+  csrfSynchronisedProtection,
   async (req, res, next) => {
     const { id } = req.params;
 
@@ -207,9 +222,8 @@ postRouter.get("/post/edit/:id", isAuthenticated(), async (req, res, next) => {
       return res.redirect(`/post/details/${id}`);
     }
 
-    console.log(post);
-
-    res.render("post/edit", { data: post });
+    const csrfToken = generateToken(req, true);
+    res.render("post/edit", { data: post, csrfToken });
   } catch (err) {
     next(err);
   }
@@ -218,6 +232,7 @@ postRouter.get("/post/edit/:id", isAuthenticated(), async (req, res, next) => {
 postRouter.post(
   "/post/edit/:id",
   isAuthenticated(),
+  csrfSynchronisedProtection,
   postValidator,
   async (req, res, next) => {
     const { id } = req.params;
@@ -225,7 +240,9 @@ postRouter.post(
     const post = await getPostById(id);
 
     if (!post) {
-      return res.render("error_pages/404");
+      return res.render("error_pages/404", {
+        errors: [{ msg: "Post not found" }],
+      });
     }
 
     const userId = req.user._id;
@@ -239,7 +256,7 @@ postRouter.post(
     const errors = validationResult(req.body);
 
     if (!errors.isEmpty()) {
-      return res.render("post/edit", { data: post, errors: errors });
+      return res.render("post/edit", { data: post, errors: errors.array() });
     }
 
     try {

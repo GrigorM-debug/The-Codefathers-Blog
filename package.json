@@ -53,6 +53,7 @@
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
     "cookie-parser": "^1.4.7",
+    "csrf-sync": "^4.0.3",
     "dotenv": "^16.4.7",
     "emailjs": "^4.0.3",
     "express": "^4.21.2",

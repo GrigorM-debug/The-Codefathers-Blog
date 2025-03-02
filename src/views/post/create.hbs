@@ -3,6 +3,7 @@
     <h1 class="mt-2">Create Post</h1>
   </div>
   <form action="/create" method="post">
+    <input type="hidden" name="_csrf" value="{{this.csrfToken}}" />
     <div class="form-group">
       <label for="title" class="fw-bold fs-5 mb-2">Post Title</label>
       <input
@@ -27,7 +28,7 @@
         required="true"
         minlength="3"
         maxlength="5000"
-        {{!-- {{! pattern="^https?:\/\/(?:[\w-]+\.)+[\w-]+(?:\/[\w\-./?%&=]*)?\.(jpg|jpeg|png|gif|webp)(\?[\w=&]*)?$" }} --}}
+        pattern="^https?:\/\/(?:[\w-]+\.)+[\w-]+(?:\/[\w\-./?%&=]*)?\.(jpg|jpeg|png|gif|webp)(\?[\w=&]*)?$"
         value="{{data.bannnerImageUrl}}"
       />
     </div>

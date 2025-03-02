@@ -3,6 +3,7 @@
     <h1 class="mt-2">Edit Post</h1>
   </div>
   <form action="/post/edit/{{data._id}}" method="post">
+    <input type="hidden" name="_csrf" value="{{this.csrfToken}}" />
     <div class="form-group">
       <label for="title" class="fw-bold fs-5 mb-2">Post Title</label>
       <input
