@@ -181,3 +181,12 @@ export async function getUserFollowingsIdsByUserId(userId) {
 export async function updateUser(userId, userData) {
   await User.findByIdAndUpdate(userId, userData);
 }
+
+//Used by the chat system
+export async function updateUserSocketId(username, socketId) {
+  const user = await User.findOne({ username: username });
+
+  user.socketId = socketId;
+
+  await user.save();
+}
