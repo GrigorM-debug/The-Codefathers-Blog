@@ -1,15 +1,21 @@
 import { updateUserSocketId } from "../services/user.js";
 import { createMessage } from "../services/message.js";
+import { userExistByUsername } from "../services/user.js";
 
 export async function handleSocketConnection(io) {
   io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
 
-    socket.on("join", async ({ name, roomId }) => {
+    socket.on("join", async ({ username, roomId }) => {
       const sockerId = socket.id;
-      await updateUserSocketId(name, sockerId);
-      socket.join(roomId);
-      console.log(`${name} joined room: ${roomId}`);
+
+      const isUserExisting = await userExistByUsername(username);
+
+      if (isUserExisting) {
+        await updateUserSocketId(username, sockerId);
+        socket.join(roomId);
+        console.log(`${username} joined room: ${roomId}`);
+      }
     });
 
     socket.on("message", async ({ roomId, senderId, username, text }) => {
