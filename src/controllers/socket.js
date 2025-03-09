@@ -6,6 +6,7 @@ export async function handleSocketConnection(io) {
   io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
 
+    //This is listening for join event trigger for joining rooms
     socket.on("join", async ({ username, roomId }) => {
       const sockerId = socket.id;
 
@@ -18,8 +19,8 @@ export async function handleSocketConnection(io) {
       }
     });
 
-    socket.on("message", async ({ roomId, senderId, username, text }) => {
-      const message = await createMessage(roomId, senderId, username, text);
+    socket.on("message", async ({ roomId, senderId, text }) => {
+      const message = await createMessage(roomId, senderId, text);
       io.to(roomId).emit("message", message);
     });
 
