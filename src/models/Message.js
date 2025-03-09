@@ -1,8 +1,8 @@
 import { Schema, model, SchemaTypes } from "mongoose";
 
 const MessageSchema = new Schema({
-  roomId: { type: SchemaTypes.ObjectId, ref: "Room", required: true },
-  senderId: { type: SchemaTypes.ObjectId, ref: "User", required: true },
+  room: { type: SchemaTypes.ObjectId, ref: "Room", required: true },
+  sender: { type: SchemaTypes.ObjectId, ref: "User", required: true },
   text: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
