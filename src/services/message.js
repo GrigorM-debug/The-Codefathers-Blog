@@ -6,8 +6,13 @@ export async function createMessage(roomId, senderId, text) {
 }
 
 export async function getMessagesByRoomId(roomId) {
-  const message = await Message.find({ room: roomId })
+  const messages = await Message.find({ room: roomId })
     .populate("sender")
     .lean();
-  return message;
+
+  messages.forEach((m) => {
+    m.createdAt = m.createdAt.toLocaleString();
+  });
+
+  return messages;
 }
