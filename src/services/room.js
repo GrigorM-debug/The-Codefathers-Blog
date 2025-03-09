@@ -27,3 +27,11 @@ export async function roomExistById(roomId) {
 
   return true;
 }
+
+export async function getRoomNameByRoomId(roomId) {
+  const room = await Room.findById(roomId);
+
+  if (room) {
+    return room.name;
+  }
+}
