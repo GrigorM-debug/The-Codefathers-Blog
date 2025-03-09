@@ -7,7 +7,7 @@ export async function createRoom(roomName) {
 }
 
 export async function getAllRooms() {
-  return await Room.find();
+  return await Room.find().lean();
 }
 
 export async function addUserToRoom(roomId, userId) {
@@ -16,4 +16,14 @@ export async function addUserToRoom(roomId, userId) {
     room.participants.push(userId);
     await room.save();
   }
+}
+
+export async function roomExistById(roomId) {
+  const room = await Room.findById(roomId);
+
+  if (!room) {
+    return false;
+  }
+
+  return true;
 }
