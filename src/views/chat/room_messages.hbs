@@ -1,0 +1,57 @@
+<div class="container">
+  <div class="row clearfix">
+    <div class="col-lg-12">
+      <div class="card chat-app">
+        <div class="chat">
+          <div class="chat-header clearfix">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="chat-about">
+                  <h2 class="m-b-0">{{this.roomName}}</h2>
+                  <p id="room-id" hidden>{{this.roomId}}</p>
+                </div>
+              </div>
+              <div class="col-lg-6 hidden-sm text-right">
+                <a href="/rooms" class="btn btn-success">Back</a>
+
+              </div>
+            </div>
+          </div>
+          <div class="chat-history">
+            <ul class="m-b-0">
+              {{#each this.messages}}
+                <li class="clearfix">
+                  <div class="message-data text-right">
+                    <span class="message-data-time">{{this.createdAt}}</span>
+                    <p>{{this.sender.username}}</p>
+                    <img src={{this.sender.imageUrl}} alt="avatar" />
+                  </div>
+                  <div class="message other-message float-right">
+                    {{this.text}}
+                  </div>
+                </li>
+              {{/each}}
+            </ul>
+          </div>
+          <div class="chat-message clearfix">
+            <div class="input-group mb-0">
+              <div class="input-group-prepend">
+                <button id="send-button" class="input-group-text"><i
+                    class="fa fa-send"
+                  ></i></button>
+              </div>
+              <input
+                id="chat-text"
+                type="text"
+                class="form-control"
+                placeholder="Enter text here..."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/message.js"></script>

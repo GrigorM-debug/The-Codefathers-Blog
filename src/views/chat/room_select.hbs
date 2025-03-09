@@ -1,0 +1,32 @@
+<div
+  class="d-flex flex-column align-items-center justify-content-center vh-100 bg-dark text-white"
+>
+  <h1 class="fs-1 mb-4">Join Chat Room</h1>
+
+  <p id="username" hidden>{{this.username}}</p>
+
+  {{#if rooms}}
+    <ul class="mb-4 px-4 py-2 rounded bg-secondary text-white border-0">
+      {{#each rooms}}
+        <li
+          id="room"
+          room-Id="{{this._id}}"
+          class="border border-dark rounded"
+        >{{this.name}}</li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <p>No rooms</p>
+  {{/if}}
+
+  <div class="d-flex justify-content-center">
+    <a href="/create_room" class="btn btn-success fw-bold px-4 py-2">
+      Create Room
+    </a>
+    <a href="/" class="btn btn-info fw-bold px-4 py-2">
+      Back to Blog System
+    </a>
+  </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/room.js"></script>
