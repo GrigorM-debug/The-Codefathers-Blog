@@ -16,6 +16,9 @@ export async function handleSocketConnection(io) {
         await updateUserSocketId(username, sockerId);
         socket.join(roomId);
         console.log(`${username} joined room: ${roomId}`);
+
+        //Emit event back to the client
+        socket.emit("roomJoined", { roomId });
       }
     });
 
