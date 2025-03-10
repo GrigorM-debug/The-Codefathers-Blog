@@ -5,9 +5,23 @@ import {
   addUserToRoom,
   getRoomNameByRoomId,
   roomExistById,
+  roomExistByName,
 } from "../services/room.js";
 import { createMessage, getMessagesByRoomId } from "../services/message.js";
 import { getAllRooms, createRoom } from "../services/room.js";
+import { roomValidations } from "../express-validator/room.js";
+
+import { csrfSync } from "csrf-sync";
+import { validationResult } from "express-validator";
+
+const { generateToken } = csrfSync();
+
+const { csrfSynchronisedProtection } = csrfSync({
+  getTokenFromRequest: (req) => {
+    console.log(req.body._csrf);
+    return req.body["_csrf"];
+  }, // Used to retrieve the token submitted by the user in a form
+});
 
 const roomRouter = Router();
 
@@ -114,22 +128,42 @@ roomRouter.post("/message", isAuthenticated(), async (req, res, next) => {
 });
 
 //Create room get. Shows the create room form
-roomRouter.get("/create_room", isAuthenticated(), async (req, res, next) => {});
+roomRouter.get("/create_room", isAuthenticated(), async (req, res, next) => {
+  //generate csrf token
+  const token = generateToken(req, true);
+  //render the view
+  res.render("chat/create_room", { csrfToken: token });
+});
 
 //Create room post
-roomRouter.post("/create_room", isAuthenticated(), async (req, res, next) => {
-  const { roomName } = req.body;
-  if (!roomName) {
-    res.status(400).json({ message: "All fields are required" });
-    return;
-  }
+roomRouter.post(
+  "/create_room",
+  isAuthenticated(),
+  csrfSynchronisedProtection,
+  roomValidations,
+  async (req, res, next) => {
+    //validate the body
+    const errors = validationResult(req);
 
-  try {
-    const room = await createRoom(roomName);
-    res.status(201).json({ message: "Room created", data: room });
-  } catch (err) {
-    next(err);
+    if (!errors.isEmpty()) {
+      return res.render("chat/room_create", {
+        data: req.body,
+        errors: errors.array(),
+      });
+    }
+
+    //check if room already exists by name
+    const isRoomExisting = await roomExistByName(req.body.name);
+
+    if (isRoomExisting) {
+      return res.render("chat/create_room", {
+        data: req.body,
+        errors: [{ msg: "Room already exists" }],
+      });
+    }
+
+    //create the room
   }
-});
+);
 
 export default roomRouter;
