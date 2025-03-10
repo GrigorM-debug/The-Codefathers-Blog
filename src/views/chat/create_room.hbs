@@ -1,0 +1,25 @@
+<div class="container create-post-container">
+  <div class="section-title text-center">
+    <h1 class="mt-2">Create Chat Room</h1>
+  </div>
+  <form action="" method="post">
+    <input type="hidden" name="_csrf" value="{{this.csrfToken}}" />
+    <div class="form-group">
+      <label for="title" class="fw-bold fs-5 mb-2">Room Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="title"
+        name="title"
+        required="true"
+        minlength="3"
+        maxlength="100"
+        value="{{data.name}}"
+      />
+    </div>
+
+    <div class="col-md-12 text-center">
+      <button type="submit" id="submitButton" class="submit-btn">Create Room</button>
+    </div>
+  </form>
+</div>
