@@ -5,11 +5,16 @@ import errorHandler from "../src/middlewares/errorHandler.js";
 import session from "express-session";
 import { handleSocketConnection } from "../src/controllers/socket.js";
 import { createServer } from "http";
-import { Server as SocketIOServer } from "socket.io";
+import { Server } from "socket.io";
 
 export default function expressConfig(app) {
   const httpServer = createServer(app);
-  const io = new SocketIOServer(httpServer);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "*",
+    },
+  });
+  handleSocketConnection(io);
   const secret = "Cookie parser secret";
 
   app.use(express.json());
@@ -33,6 +38,4 @@ export default function expressConfig(app) {
   );
   app.use(auth());
   app.use(errorHandler());
-
-  handleSocketConnection(io);
 }

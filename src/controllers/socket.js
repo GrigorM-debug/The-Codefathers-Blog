@@ -8,12 +8,18 @@ export async function handleSocketConnection(io) {
 
     //This is listening for join event trigger for joining rooms
     socket.on("join", async ({ username, roomId }) => {
-      const sockerId = socket.id;
+      console.log("Join event received");
 
+      const socketId = socket.id;
+
+      console.log(socketId);
+
+      console.log(roomId);
+      console.log(username);
       const isUserExisting = await userExistByUsername(username);
 
       if (isUserExisting) {
-        await updateUserSocketId(username, sockerId);
+        await updateUserSocketId(username, socketId);
         socket.join(roomId);
         console.log(`${username} joined room: ${roomId}`);
 

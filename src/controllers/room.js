@@ -32,20 +32,23 @@ roomRouter.get("/rooms", isAuthenticated(), async (req, res, next) => {
     const errors = req.session.errors || [];
     delete req.session.errors;
 
+    const success = req.session.successMessage || {};
+    delete req.session.successMessage;
+
     const rooms = await getAllRooms();
-    res.render("chat/room_select", { rooms, username, errors });
+    res.render("chat/room_select", { rooms, username, errors, success });
   } catch (err) {
     next(err);
   }
 });
 
 //Join room. Currently not using it. Maybe remove it.
-roomRouter.post("/join", isAuthenticated(), async (req, res, next) => {
-  const { name, socketId, roomId } = req.body;
+roomRouter.post("/join/:roomId", isAuthenticated(), async (req, res, next) => {
+  const { roomId } = req.params;
   const userId = req?.user?._id;
   const username = req?.user?.username;
 
-  if (!name || !socketId || !roomId) {
+  if (!username || !roomId) {
     req.session.errors = [{ msg: "Name, socketId, and roomId are required" }];
     return res.redirect(`/rooms`);
   }
@@ -59,7 +62,7 @@ roomRouter.post("/join", isAuthenticated(), async (req, res, next) => {
       });
     }
 
-    await updateUserSocketId(username, socketId);
+    // await updateUserSocketId(username, socketId);
     await addUserToRoom(roomId, userId);
 
     req.session.successMessage = {
@@ -130,9 +133,9 @@ roomRouter.post("/message", isAuthenticated(), async (req, res, next) => {
 //Create room get. Shows the create room form
 roomRouter.get("/create_room", isAuthenticated(), async (req, res, next) => {
   //generate csrf token
-  const token = generateToken(req, true);
+  const csrfToken = generateToken(req, true);
   //render the view
-  res.render("chat/create_room", { csrfToken: token });
+  res.render("chat/create_room", { csrfToken: csrfToken });
 });
 
 //Create room post
@@ -142,27 +145,40 @@ roomRouter.post(
   csrfSynchronisedProtection,
   roomValidations,
   async (req, res, next) => {
+    console.log(req.body.name);
     //validate the body
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.render("chat/room_create", {
+      return res.render("chat/create_room", {
         data: req.body,
         errors: errors.array(),
       });
     }
 
-    //check if room already exists by name
-    const isRoomExisting = await roomExistByName(req.body.name);
+    try {
+      //check if room already exists by name
+      const isRoomExisting = await roomExistByName(req.body.name);
 
-    if (isRoomExisting) {
-      return res.render("chat/create_room", {
-        data: req.body,
-        errors: [{ msg: "Room already exists" }],
-      });
+      if (isRoomExisting) {
+        return res.render("chat/create_room", {
+          data: req.body,
+          errors: [{ msg: "Room already exists" }],
+        });
+      }
+
+      //create the room
+      await createRoom(req.body.name);
+
+      req.session.successMessage = {
+        success: true,
+        msg: "Room successfully created",
+      };
+
+      res.redirect("/rooms");
+    } catch (err) {
+      next(err);
     }
-
-    //create the room
   }
 );
 

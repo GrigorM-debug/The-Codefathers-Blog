@@ -2,7 +2,7 @@
   <div class="section-title text-center">
     <h1 class="mt-2">Create Chat Room</h1>
   </div>
-  <form action="" method="post">
+  <form action="/create_room" method="post">
     <input type="hidden" name="_csrf" value="{{this.csrfToken}}" />
     <div class="form-group">
       <label for="name" class="fw-bold fs-5 mb-2">Room Name</label>
@@ -13,7 +13,7 @@
         name="name"
         required="true"
         minlength="3"
-        maxlength="100"
+        maxlength="200"
         value="{{data.name}}"
       />
     </div>

@@ -7,7 +7,7 @@
             <div class="row">
               <div class="col-lg-6">
                 <div class="chat-about">
-                  <h2 class="m-b-0">{{this.roomName}}</h2>
+                  <h2 class="m-b-0">Room: {{this.roomName}}</h2>
                   <p id="room-id" hidden>{{this.roomId}}</p>
                 </div>
               </div>
@@ -35,17 +35,17 @@
           </div>
           <div class="chat-message clearfix">
             <div class="input-group mb-0">
-              <div class="input-group-prepend">
-                <button id="send-button" class="input-group-text"><i
-                    class="fa fa-send"
-                  ></i></button>
-              </div>
               <input
                 id="chat-text"
                 type="text"
                 class="form-control"
                 placeholder="Enter text here..."
               />
+              <div class="input-group-prepend">
+                <button id="send-button" class="input-group-text"><i
+                    class="fa-solid fa-paper-plane"
+                  ></i></button>
+              </div>
             </div>
           </div>
         </div>

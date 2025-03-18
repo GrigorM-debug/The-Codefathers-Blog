@@ -1,32 +1,38 @@
 <div
-  class="d-flex flex-column align-items-center justify-content-center vh-100 bg-dark text-white"
+  class="d-flex flex-column align-items-center justify-content-start vh-100 bg-white text-white"
 >
-  <h1 class="fs-1 mb-4">Join Chat Room</h1>
+  <h1 class="text-dark fs-1 mb-4">Join Chat Room</h1>
 
   <p id="username" hidden>{{this.username}}</p>
 
   {{#if rooms}}
-    <ul class="mb-4 px-4 py-2 rounded bg-secondary text-white border-0">
+    <ul class="mb-4 px-4 py-2 rounded text-white">
       {{#each rooms}}
         <li
           id="room"
           room-Id="{{this._id}}"
-          class="border border-dark rounded"
-        >{{this.name}}</li>
+          class="fs-2 fw-bold bg-secondary border border-dark rounded m-2 p-2"
+        ><form action="/join/{{this._id}}" method="post">
+            <button
+              type="submit"
+              class="fs-2 text-decoration-none text-white bg-0 btn btn-link"
+            >{{this.name}}</button>
+          </form></li>
       {{/each}}
     </ul>
   {{else}}
     <p>No rooms</p>
   {{/if}}
 
-  <div class="d-flex justify-content-center">
-    <a href="/create_room" class="btn btn-success fw-bold px-4 py-2">
+  <div class="d-flex justify-content-between">
+    <a href="/create_room" class="btn btn-success fw-bold px-4 py-2 me-4">
       Create Room
     </a>
-    <a href="/" class="btn btn-info fw-bold px-4 py-2">
+    <a href="/" class="btn btn-light fw-bold px-4 py-2">
       Back to Blog System
     </a>
   </div>
 </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/room.js"></script>
+{{! <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+
+<script type="module" src="/js/room.js"></script> }}

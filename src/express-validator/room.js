@@ -2,7 +2,7 @@ import { roomConstants } from "../validationConstants/room.js";
 import { body } from "express-validator";
 
 export const roomValidations = [
-  body("room")
+  body("name")
     .trim()
     .notEmpty()
     .withMessage(roomConstants.name.requiredErrorMessage)

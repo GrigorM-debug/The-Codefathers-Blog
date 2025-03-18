@@ -3,7 +3,6 @@ import Room from "../models/Room.js";
 export async function createRoom(roomName) {
   const room = new Room({ name: roomName });
   await room.save();
-  return room;
 }
 
 export async function getAllRooms() {
