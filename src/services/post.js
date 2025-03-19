@@ -7,6 +7,8 @@ export async function createPost(postData, userId) {
     content: postData.content,
     bannnerImageUrl: postData.bannerImageUrl,
     author: userId,
+    comments: [],  
+    likes: []
   });
 
   const savedPost = await newPost.save();

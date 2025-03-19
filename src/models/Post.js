@@ -49,13 +49,19 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
-  comments: [{ type: SchemaTypes.ObjectId, ref: "Comment" }],
+  comments: {
+    type: [{ type: SchemaTypes.ObjectId, ref: "Comment" }],
+    default: []
+  },
   commentCount: {
     type: Number,
     default: 0,
     min: 0,
   },
-  likes: [{ type: SchemaTypes.ObjectId, ref: "Like" }],
+  likes: {
+    type: [{ type: SchemaTypes.ObjectId, ref: "Like" }],
+    default: []
+  },
   likeCount: {
     type: Number,
     default: 0,
