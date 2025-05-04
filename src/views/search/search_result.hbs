@@ -1,0 +1,47 @@
+<div class="container mt-4">
+    <h2>Search Results for "{{searchString}}"</h2>
+
+    {{#if this.users}}
+        <h3 class="mt-4">Users</h3>
+        <div class="row">
+            {{#each users}}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img src="{{imageUrl}}" class="card-img-top rounded-circle w-50 mx-auto mt-3" alt="{{this.username}}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{this.username}}</h5>
+                            <small class="text-muted">Email: {{this.email}}</small>
+                            <small class="text-muted">
+                                Joined: {{this.createdAt}}
+                            </small>
+                            <a href="/profile/{{this._id}}" class="btn btn-success mt-2">View Profile</a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    {{/if}}
+
+    {{#if this.posts}}
+        <h3 class="mt-4">Posts</h3>
+        <div class="row">
+            {{#each posts}}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{this.bannnerImageUrl}}" class="card-img-top" alt="{{this.title}}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{this.title}}</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">By: {{this.author.username}}</small>
+                                <small class="text-muted">
+                                    Created At: {{this.createdAt}}
+                                </small>
+                            </div>
+                            <a href="/post/details/{{this._id}}" class="btn btn-success mt-2">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    {{/if}}
+</div>

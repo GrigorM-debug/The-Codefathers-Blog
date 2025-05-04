@@ -5,6 +5,7 @@ import postRouter from "../src/controllers/post.js";
 import commentRouter from "../src/controllers/comment.js";
 import likeRouter from "../src/controllers/like.js";
 import roomRouter from "../src/controllers/room.js";
+import searchRouter from "../src/controllers/search.js";
 
 export default function routes(app) {
   app.get("/", homeController);
@@ -14,6 +15,7 @@ export default function routes(app) {
   app.use(commentRouter);
   app.use(likeRouter);
   app.use(roomRouter);
+  app.use(searchRouter);
   app.get("/404", (req, res) => res.render("error_pages/404"));
   app.all("*", (req, res) => {
     res.render("error_pages/404");

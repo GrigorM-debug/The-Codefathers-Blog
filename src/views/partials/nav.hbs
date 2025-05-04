@@ -45,11 +45,12 @@
         </li>
       </ul>
 
-      {{! <!-- Center - Search form -->
-      <form class="d-flex mx-auto">
-        <input class="form-control" type="text" placeholder="Readonly input here…" readonly>
+      {{!-- Search input --}}
+      <form class="d-flex mx-auto" method="POST" action="/search">
+        <input class="form-control" type="text" name="searchString" placeholder="Search posts..." required>
         <button class="btn btn-outline-success" type="submit">Search</button>
-      </form> }}
+      </form>
+      {{!-- Search input --}}
 
       <!-- Right side - Write link -->
       {{#if isAuthenticated}}
