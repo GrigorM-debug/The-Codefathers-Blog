@@ -7,7 +7,7 @@ async function findPostByName(searchString) {
     }
 
     const posts = await Post.find({
-        title: { $regex: searchString, $options: 'i' }  // 'i' flag makes it case insensitive
+        title: { $regex: searchString, $options: 'i' } 
     }).select('title createdAt bannnerImageUrl author')
       .populate('author', 'username')
       .lean()

@@ -6,8 +6,6 @@ const searchRouter = Router()
 searchRouter.post('/search', async (req, res, next) => {
     const {searchString} = req.body
 
-    console.log(searchString)
-
     //Validate the search string
     if(!searchString || searchString.trim() === '') {
         return res.render("error_pages/404");
