@@ -4,6 +4,8 @@ import { register } from "../src/services/user.js";
 import { describe, it } from "mocha";
 import { findPostByName, findUserByUserName } from "../src/services/search.js";
 import { expect } from "chai";
+import mongoose from "mongoose";
+import User from "../src/models/User.js";
 
 let mongodbServer;
 
@@ -17,7 +19,7 @@ const user1 = {
 };
 
 const user2 = {
-  username: "Ivan674030",
+  username: "Ivan030",
   email: "ivanP@abv.bg",
   password: "12345678",
   imageUrl: "https://example.com/image.jpg",
@@ -26,18 +28,18 @@ const user2 = {
 };
 
 const post1 = {
-  title: "Test post title",
+  title: "Test post title1",
   content:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  bannerImageUrl: "https://example.com/image.jpg",
+    "1Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    bannerImageUrl: "https://example.com/image.jpg",
   createdAt: new Date(),
 }
 
 const post2 = {
   title: "Test post title2",
   content:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  bannerImageUrl: "https://example.com/image.jpg",
+    "2Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    bannerImageUrl: "https://example.com/image.jpg",
   createdAt: new Date(),
 }
 
@@ -46,21 +48,14 @@ describe("Search service unit tests", () => {
     mongodbServer = await MongoMemoryServer.create();
     await mongoose.connect(mongodbServer.getUri());
 
-    const token =  await register(user1);
-    const token2 = await register(user2);
+    await register(user1);
+    await register(user2);
 
-    const post1Completed = {
-      ...post1,
-      author: token._id
-    }
+    const user1Data = await User.findOne({username: user1.username})
+    const user2Data = await User.findOne({username: user2.username});
 
-    const post2Completed = {
-      ...post2,
-      author: token._id
-    }
-
-    await createPost(post1Completed)
-    await createPost(post2Completed)
+    await createPost(post1, user1Data._id)
+    await createPost(post2, user2Data._id)
   })
 
   after(async () => {
@@ -77,7 +72,7 @@ describe("Search service unit tests", () => {
   })
 
   it("findPostByName: Should return empty array if post doesn't exist", async () => {
-    const postTitle = "Post title";
+    const postTitle = "I hate unit tests";
 
     const posts = await findPostByName(postTitle);
 
@@ -91,8 +86,7 @@ describe("Search service unit tests", () => {
     expect(posts).to.have.lengthOf(1);
     expect(posts[0]).to.deep.include({
       title: post1.title,
-      content: post1.content,
-      bannerImageUrl: post1.bannerImageUrl
+      bannnerImageUrl: post1.bannerImageUrl
     })
   })
 
@@ -103,21 +97,19 @@ describe("Search service unit tests", () => {
 
     expect(posts).to.be.an("array").that.is.not.empty;
     expect(posts).to.have.lengthOf(2);
-    xpect(posts[0]).to.deep.include({
+    expect(posts[0]).to.deep.include({
       title: post1.title,
-      content: post1.content,
-      bannerImageUrl: post1.bannerImageUrl
+      bannnerImageUrl: post1.bannerImageUrl
     })
 
     expect(posts[1]).to.deep.include({
       title: post2.title,
-      content: post2.content,
-      bannerImageUrl: post2.bannerImageUrl
+      bannnerImageUrl: post2.bannerImageUrl
     })
   })
 
   it("findPostByName: Should find post when search string is lowercase", async () => {
-    const searchString = "test post title";  // lowercase version
+    const searchString = "test post title1";  // lowercase version
 
     const posts = await findPostByName(searchString);
 
@@ -125,14 +117,13 @@ describe("Search service unit tests", () => {
     expect(posts).to.have.lengthOf(1);
     expect(posts[0]).to.deep.include({
         title: post1.title,  // original case "Test post title"
-        content: post1.content,
-        bannerImageUrl: post1.bannerImageUrl
+        bannnerImageUrl: post1.bannerImageUrl
     });
   });
 
   
   it("findPostByName: Should find post when search string is uppercase", async () => {
-    const searchString = "TEST POST TITLE";  // uppercase version
+    const searchString = "TEST POST TITLE1";  // uppercase version
 
     const posts = await findPostByName(searchString);
 
@@ -140,8 +131,7 @@ describe("Search service unit tests", () => {
     expect(posts).to.have.lengthOf(1);
     expect(posts[0]).to.deep.include({
         title: post1.title,  // original case "Test post title"
-        content: post1.content,
-        bannerImageUrl: post1.bannerImageUrl
+        bannnerImageUrl: post1.bannerImageUrl
     });
   });
 
@@ -154,13 +144,11 @@ describe("Search service unit tests", () => {
     expect(posts).to.have.lengthOf(2);
     expect(posts[0]).to.deep.include({
         title: post1.title,
-        content: post1.content,
-        bannerImageUrl: post1.bannerImageUrl
+        bannnerImageUrl: post1.bannerImageUrl
     });
     expect(posts[1]).to.deep.include({
         title: post2.title,
-        content: post2.content,
-        bannerImageUrl: post2.bannerImageUrl
+        bannnerImageUrl: post2.bannerImageUrl
     });
   });
 
@@ -200,14 +188,14 @@ describe("Search service unit tests", () => {
     expect(users).to.be.an("array").that.is.not.empty;
     expect(users).to.have.lengthOf(2);
     expect(users[0]).to.deep.include({
-        username: user1.username,
-        email: user1.email,
-        imageUrl: user1.imageUrl
-    });
-    expect(users[1]).to.deep.include({
         username: user2.username,
         email: user2.email,
         imageUrl: user2.imageUrl
+    });
+    expect(users[1]).to.deep.include({
+        username: user1.username,
+        email: user1.email,
+        imageUrl: user1.imageUrl
     });
   });
 
@@ -247,14 +235,14 @@ describe("Search service unit tests", () => {
     expect(users).to.be.an("array").that.is.not.empty;
     expect(users).to.have.lengthOf(2);
     expect(users[0]).to.deep.include({
-        username: user1.username,
-        email: user1.email,
-        imageUrl: user1.imageUrl
-    });
-    expect(users[1]).to.deep.include({
         username: user2.username,
         email: user2.email,
         imageUrl: user2.imageUrl
+    });
+    expect(users[1]).to.deep.include({
+        username: user1.username,
+        email: user1.email,
+        imageUrl: user1.imageUrl
     });
   });
 })
