@@ -1,5 +1,4 @@
 import Post from "../models/Post.js";
-import { postValidationConstants } from "../validationConstants/post.js";
 
 export async function createPost(postData, userId) {
   const newPost = new Post({
@@ -7,8 +6,8 @@ export async function createPost(postData, userId) {
     content: postData.content,
     bannnerImageUrl: postData.bannerImageUrl,
     author: userId,
-    comments: [],  
-    likes: []
+    comments: [],
+    likes: [],
   });
 
   const savedPost = await newPost.save();
@@ -48,11 +47,13 @@ export async function getPostByIdWithComments(postId) {
     })
     .lean();
 
-  post.createdAt = post.createdAt.toLocaleString();
-  post.author.createdAt = post.author.createdAt.toLocaleString();
-  post.comments.forEach((comment) => {
-    comment.createdAt = comment.createdAt.toLocaleString();
-  });
+  if (post) {
+    post.createdAt = post.createdAt.toLocaleString();
+    post.author.createdAt = post.author.createdAt.toLocaleString();
+    post.comments.forEach((comment) => {
+      comment.createdAt = comment.createdAt.toLocaleString();
+    });
+  }
 
   return post;
 }
@@ -147,8 +148,6 @@ export async function updateCommentsCollectionInPostSchemaWhenCommentingPost(
   postId
 ) {
   const post = await Post.findById(postId);
-
-  console.log(post);
 
   post.comments.push(commentId);
   await post.save();
