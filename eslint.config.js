@@ -11,6 +11,8 @@ export default [
         ...globals.browser,
         ...globals.node,
         ...globals.mongo,
+        ...globals.mocha,
+        ...globals.chai,
       },
     },
     rules: {
