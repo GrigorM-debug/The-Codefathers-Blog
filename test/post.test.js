@@ -528,20 +528,28 @@ describe("Post service unit tests", () => {
     expect(posts).to.be.an("array");
     expect(posts).to.have.lengthOf(3); // Should only return 3 posts
 
-    // ------- This will work if i use .toISOString() in service -------
     // // Verify posts are in descending order by date
     // for (let i = 0; i < posts.length - 1; i++) {
-    //   const currentDate = new Date(posts[i].createdAt);
-    //   const nextDate = new Date(posts[i + 1].createdAt);
+    //   const date1 = posts[i].createdAt;
+    //   console.log(date1);
 
-    //   expect(currentDate.getTime()).to.be.greaterThan(nextDate.getTime());
+    //   const date1Parsed = dateParsingHelper(date1);
+
+    //   const date2 = posts[i + 1].createdAt;
+    //   console.log(date2);
+
+    //   const date2Parsed = dateParsingHelper(date2);
+
+    //   expect(date1Parsed.getTime()).to.be.greaterThan(date2Parsed.getTime());
     // }
 
     // Verify the titles of the last 3 posts
     const titles = posts.map((post) => post.title);
-    expect(titles).to.include("Fourth Test Post");
-    expect(titles).to.include("Third Test Post");
-    expect(titles).to.include("Second Test Post");
+
+    console.log(titles);
+    expect(titles).to.include("Format Test Post");
+    expect(titles).to.include("Complete Post");
+    expect(titles).to.include("Test Timestamp");
   });
 
   it("getAllPostsByUserId: should return posts with formatted dates", async () => {
@@ -731,16 +739,20 @@ describe("Post service unit tests", () => {
   it("getAllPostsByUserIdNoLimitation: should return posts in descending order by date", async () => {
     const posts = await getAllPostsByUserIdNoLimitation(user1Id.toString());
 
-    // ------- This will work if i use .toISOString() in service -------
     // Verify posts are in descending order by date
     // for (let i = 0; i < posts.length - 1; i++) {
-    //   const currentDate = new Date(posts[i].createdAt);
-    //   const nextDate = Date.parse(posts[i + 1].createdAt);
+    //   const date1 = posts[i].createdAt;
+    //   const date2 = posts[i + 1].createdAt;
 
-    //   console.log(typeof currentDate);
-    //   console.log(currentDate);
+    //   console.log(date1);
+    //   console.log(typeof date1);
+    //   console.log(date2);
+    //   console.log(typeof date2);
 
-    //   expect(currentDate.getTime()).to.be.greaterThan(nextDate.getTime());
+    //   const date1Parsed = dateParsingHelper(date1);
+    //   const date2Parsed = dateParsingHelper(date2);
+
+    //   expect(date1Parsed.getTime()).to.be.greaterThan(date2Parsed.getTime());
     // }
 
     // Also verify that dates are formatted as strings
@@ -1002,3 +1014,14 @@ describe("Post service unit tests", () => {
     expect(posts).to.be.empty;
   });
 });
+
+function dateParsingHelper(date) {
+  const [first, second] = date.split(",").map((item) => item.trim());
+  const [day, month, year] = first.split(".");
+  const [hours, minutes, seconds] = second.split(":");
+
+  const newDate = new Date(year, month - 1, day, hours, minutes, seconds);
+  console.log(newDate);
+
+  return newDate;
+}

@@ -7,6 +7,7 @@ import {
   gellAllPosts,
   getPostByIdWithComments,
   getAllPostsByUserId,
+  // eslint-disable-next-line no-unused-vars
   postExistById,
   postAlreadyExistsByTitle,
   deletePost,
@@ -55,7 +56,7 @@ postRouter.get("/post/details/:_id", async (req, res, next) => {
 
     if (!post) {
       return res.render("error_pages/404", {
-        errors: [{ msg: err.message }],
+        errors: [{ msg: "Post doesn't exist" }],
       });
     }
 

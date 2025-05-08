@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { register } from "../src/services/user.js";
-import { expect, use } from "chai";
+import { expect } from "chai";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { createPost } from "../src/services/post.js";
 import {
@@ -9,7 +9,7 @@ import {
   isUserCommentAuthor,
   getComment,
   deleteComment,
-  updateComment
+  updateComment,
 } from "../src/services/comment.js";
 import Comment from "../src/models/Comment.js";
 import User from "../src/models/User.js";
@@ -44,7 +44,6 @@ const post = {
   createdAt: new Date(),
 };
 
-
 let user2Id;
 let userId;
 let postId;
@@ -56,14 +55,14 @@ const comment = {
     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum..",
   author: user2Id,
   post: postId,
-}
+};
 
 const comment2 = {
   content:
     "Lorem Ipsum2 is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum..",
   author: userId,
   post: postId,
-}
+};
 
 describe("Comment Service tests", () => {
   before(async () => {
@@ -71,37 +70,39 @@ describe("Comment Service tests", () => {
     await mongoose.connect(mongodbServer.getUri());
 
     await register(user);
-    await register(user2)
+    await register(user2);
 
-    const createdUser = await User.findOne({username: user.username})
-    const createdUser2 = await User.findOne({username: user2.username});
+    const createdUser = await User.findOne({ username: user.username });
+    const createdUser2 = await User.findOne({ username: user2.username });
     userId = createdUser._id;
     user2Id = createdUser2._id;
 
     const postWithComments = {
       ...post,
-      comments: []
+      comments: [],
     };
-    
+
     postId = await createPost(postWithComments, userId);
 
     const completeComment = {
       ...comment,
       author: user2Id,
-      post: postId
+      post: postId,
     };
 
     const completeComment2 = {
       ...comment2,
       author: userId,
-      post: postId
+      post: postId,
     };
 
     await createComment(completeComment);
-    await createComment(completeComment2)
+    await createComment(completeComment2);
 
-    const createdComment = await Comment.findOne({content: comment.content});
-    const createdComment2 = await Comment.findOne({content: comment2.content});
+    const createdComment = await Comment.findOne({ content: comment.content });
+    const createdComment2 = await Comment.findOne({
+      content: comment2.content,
+    });
     commentId = createdComment._id;
     comment2Id = createdComment2._id;
   });
@@ -163,24 +164,27 @@ describe("Comment Service tests", () => {
     const originalComment = await getComment(userId, postId);
     expect(originalComment).to.be.an("object");
     expect(originalComment._id.toString()).to.equal(comment2Id.toString());
-    
+
     const updatedContent = "This is the updated comment content";
-    
+
     await updateComment(userId, postId, updatedContent);
-    
+
     const updatedComment = await getComment(userId, postId);
-    
+
     expect(updatedComment).to.be.an("object");
     expect(updatedComment.content).to.equal(updatedContent);
     expect(updatedComment._id.toString()).to.equal(comment2Id.toString());
-    
-    expect(new Date(updatedComment.createdAt)).to.be.at.least(new Date(originalComment.createdAt));
+
+    expect(new Date(updatedComment.createdAt)).to.be.at.least(
+      new Date(originalComment.createdAt)
+    );
   });
 
   it("createComment: Should successfully create a comment and update post's comments collection", async () => {
     const testPost = {
       title: "Test post for comment creation",
-      content: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
+      content:
+        "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
       bannerImageUrl: "https://example.com/test-banner.jpg",
       comments: [],
       author: userId,
@@ -188,25 +192,31 @@ describe("Comment Service tests", () => {
     };
 
     const newPostId = await createPost(testPost, userId);
-    
+
     const testComment = {
-      content: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of de Finibus Bonorum et Malorum The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, Lorem ipsum dolor sit amet.., comes from a line in section 1.10.32",
+      content:
+        "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of de Finibus Bonorum et Malorum The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, Lorem ipsum dolor sit amet.., comes from a line in section 1.10.32",
       author: userId,
-      post: newPostId
+      post: newPostId,
     };
 
     await createComment(testComment);
 
-    const createdComment = await Comment.findOne({content: testComment.content, post: newPostId});
+    const createdComment = await Comment.findOne({
+      content: testComment.content,
+      post: newPostId,
+    });
 
     expect(createdComment).to.be.an("object");
     expect(createdComment.content).to.equal(testComment.content);
     expect(createdComment.author.toString()).to.equal(userId.toString());
     expect(createdComment.post.toString()).to.equal(newPostId.toString());
-    
+
     const updatedPost = await Post.findById(newPostId);
     expect(updatedPost.comments).to.be.an("array");
     expect(updatedPost.comments).to.have.lengthOf(1);
-    expect(updatedPost.comments[0].toString()).to.equal(createdComment._id.toString());
-  })
+    expect(updatedPost.comments[0].toString()).to.equal(
+      createdComment._id.toString()
+    );
+  });
 });
