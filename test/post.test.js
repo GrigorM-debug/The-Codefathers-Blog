@@ -35,6 +35,8 @@ import Like from "../src/models/LIke.js";
 import User from "../src/models/User.js";
 import { dislikePost, likePost } from "../src/services/like.js";
 
+import { parse } from "date-fns";
+
 let mongodbServer;
 
 const user1 = {
@@ -60,7 +62,7 @@ const post = {
   content:
     "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
   bannerImageUrl: "https://example.com/image.jpg",
-  createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 hours ago
+  createdAt: new Date("2025-09-09T11:00:00Z"), // 3 hours ago
 };
 
 const post2 = {
@@ -68,7 +70,7 @@ const post2 = {
   content:
     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
   bannerImageUrl: "https://example.com/image2.jpg",
-  createdAt: new Date("2025-05-07T08:00:00Z"), // 2 hours older
+  createdAt: new Date("2025-09-09T12:00:00Z"), // 2 hours older
 };
 
 const post3 = {
@@ -76,7 +78,7 @@ const post3 = {
   content:
     "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
   bannerImageUrl: "https://example.com/image3.jpg",
-  createdAt: new Date("2025-05-07T09:00:00Z"), // 1 hour older, // 1 hour ago
+  createdAt: new Date("2025-09-09T13:00:00Z"), // 1 hour older, // 1 hour ago
 };
 
 const post4 = {
@@ -84,7 +86,7 @@ const post4 = {
   content:
     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
   bannerImageUrl: "https://example.com/image3.jpg",
-  createdAt: new Date("2025-05-07T10:00:00Z"), // Most recent,
+  createdAt: new Date("2025-09-09T14:00:00Z"), // Most recent,
 };
 
 let user1Id;
@@ -258,6 +260,20 @@ describe("Post service unit tests", () => {
     const like2Data = await Like.findOne({ post: post2Id, author: user2Id });
     like1Id = like1Data._id;
     like2Id = like2Data._id;
+
+    //Updated the createdAt Date for the posts
+    await Post.findByIdAndUpdate(post1Id, {
+      createdAt: new Date("2025-09-09T11:00:00Z"),
+    });
+    await Post.findByIdAndUpdate(post2Id, {
+      createdAt: new Date("2025-09-09T12:00:00Z"),
+    });
+    await Post.findByIdAndUpdate(post3Id, {
+      createdAt: new Date("2025-09-09T13:00:00Z"),
+    });
+    await Post.findByIdAndUpdate(post4Id, {
+      createdAt: new Date("2025-09-09T14:00:00Z"),
+    });
   });
 
   //Close the connection after each test
@@ -286,6 +302,7 @@ describe("Post service unit tests", () => {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       bannerImageUrl: "https://example.com/newimage.jpg",
+      createdAt: new Date("2025-09-09T15:00:00Z"),
     };
 
     const postId = await createPost(newPostData, user1Id);
@@ -305,6 +322,9 @@ describe("Post service unit tests", () => {
     expect(createdPost).to.have.property("author").that.deep.equals(user1Id);
     expect(createdPost.comments).to.be.an("array").that.is.empty;
     expect(createdPost.likes).to.be.an("array").that.is.empty;
+
+    //I need this for one of the other tests
+    await Post.findByIdAndUpdate(postId, { createdAt: newPostData.createdAt });
   });
 
   it("createPost: should create multiple posts for the same user", async () => {
@@ -313,6 +333,7 @@ describe("Post service unit tests", () => {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       bannerImageUrl: "https://example.com/first.jpg",
+      createdAt: new Date("2025-09-09T16:00:00Z"),
     };
 
     const secondPost = {
@@ -320,6 +341,7 @@ describe("Post service unit tests", () => {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       bannerImageUrl: "https://example.com/second.jpg",
+      createdAt: new Date("2025-09-09T17:00:00Z"),
     };
 
     // Create two posts
@@ -337,6 +359,14 @@ describe("Post service unit tests", () => {
 
     expect(fetchedFirstPost).to.have.property("title", firstPost.title);
     expect(fetchedSecondPost).to.have.property("title", secondPost.title);
+
+    // I need this for one of the other tests
+    await Post.findByIdAndUpdate(firstPostId, {
+      createdAt: firstPost.createdAt,
+    });
+    await Post.findByIdAndUpdate(secondPostId, {
+      createdAt: secondPost.createdAt,
+    });
   });
 
   it("createPost: should set default empty arrays for comments and likes", async () => {
@@ -345,6 +375,7 @@ describe("Post service unit tests", () => {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       bannerImageUrl: "https://example.com/default.jpg",
+      createdAt: new Date("2025-09-09T18:00:00Z"),
     };
 
     const postId = await createPost(postData, user1Id);
@@ -352,6 +383,11 @@ describe("Post service unit tests", () => {
 
     expect(createdPost.comments).to.be.an("array").that.is.empty;
     expect(createdPost.likes).to.be.an("array").that.is.empty;
+
+    //I need this for one of the other tests
+    await Post.findByIdAndUpdate(postId, {
+      createdAt: postData.createdAt,
+    });
   });
 
   it("createPost: should create post with createdAt timestamp", async () => {
@@ -360,6 +396,7 @@ describe("Post service unit tests", () => {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       bannerImageUrl: "https://example.com/timestamp.jpg",
+      createdAt: new Date("2025-09-09T19:00:00Z"),
     };
 
     const postId = await createPost(postData, user1Id);
@@ -372,6 +409,11 @@ describe("Post service unit tests", () => {
       new Date().getTime(),
       60000
     );
+
+    //I need this for one of the other tests
+    await Post.findByIdAndUpdate(postId, {
+      createdAt: postData.createdAt,
+    });
   });
 
   it("createPost: should fail when trying to create post without required title", async () => {
@@ -379,6 +421,7 @@ describe("Post service unit tests", () => {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       bannerImageUrl: "https://example.com/invalid.jpg",
+      createdAt: new Date("2025-09-09T20:00:00Z"),
     };
 
     try {
@@ -394,6 +437,7 @@ describe("Post service unit tests", () => {
     const invalidPost = {
       title: "Title without content",
       bannerImageUrl: "https://example.com/invalid.jpg",
+      createdAt: new Date("2025-09-09T21:00:00Z"),
     };
 
     try {
@@ -410,6 +454,7 @@ describe("Post service unit tests", () => {
       title: "Title without banner",
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      createdAt: new Date("2025-09-09T22:00:00Z"),
     };
 
     try {
@@ -427,6 +472,7 @@ describe("Post service unit tests", () => {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       bannerImageUrl: "https://example.com/required.jpg",
+      createdAt: new Date("2025-09-09T23:00:00Z"),
     };
 
     const postId = await createPost(postData, user1Id);
@@ -440,6 +486,10 @@ describe("Post service unit tests", () => {
       postData.bannerImageUrl
     );
     expect(createdPost).to.have.property("author").that.deep.equals(user1Id);
+
+    await Post.findByIdAndUpdate(postId, {
+      createdAt: postData.createdAt,
+    });
   });
 
   it("getAllPosts: should return all posts with populated author", async () => {
@@ -526,30 +576,33 @@ describe("Post service unit tests", () => {
     const posts = await getAllPostsByUserId(user1Id.toString());
 
     expect(posts).to.be.an("array");
+
     expect(posts).to.have.lengthOf(3); // Should only return 3 posts
 
-    // // Verify posts are in descending order by date
-    // for (let i = 0; i < posts.length - 1; i++) {
-    //   const date1 = posts[i].createdAt;
-    //   console.log(date1);
+    // Verify posts are in descending order by date
+    for (let i = 0; i < posts.length - 1; i++) {
+      const date1 = posts[i].createdAt;
 
-    //   const date1Parsed = dateParsingHelper(date1);
+      const date1Parsed = dateParsingHelper(date1);
 
-    //   const date2 = posts[i + 1].createdAt;
-    //   console.log(date2);
+      console.log(date1Parsed);
 
-    //   const date2Parsed = dateParsingHelper(date2);
+      const date2 = posts[i + 1].createdAt;
 
-    //   expect(date1Parsed.getTime()).to.be.greaterThan(date2Parsed.getTime());
-    // }
+      const date2Parsed = dateParsingHelper(date2);
+
+      console.log(date2Parsed);
+
+      expect(date1Parsed.getTime()).to.be.greaterThan(date2Parsed.getTime());
+    }
 
     // Verify the titles of the last 3 posts
     const titles = posts.map((post) => post.title);
 
     console.log(titles);
-    expect(titles).to.include("Format Test Post");
     expect(titles).to.include("Complete Post");
     expect(titles).to.include("Test Timestamp");
+    expect(titles).to.include("Test Default Arrays");
   });
 
   it("getAllPostsByUserId: should return posts with formatted dates", async () => {
@@ -653,10 +706,11 @@ describe("Post service unit tests", () => {
 
   it("updatePost: should successfully update all post fields", async () => {
     const updatedData = {
-      title: "Updated Third Post Title",
+      title: "Updated Second Post Title",
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       bannnerImageUrl: "https://example.com/updated-image3.jpg",
+      createdAt: new Date("2025-09-10T10:00:00Z"),
     };
 
     // Update the post
@@ -673,6 +727,9 @@ describe("Post service unit tests", () => {
     // Verify that other fields remain unchanged
     expect(updatedPost.comments).to.be.an("array");
     expect(updatedPost.likes).to.be.an("array");
+
+    //I need this for on of the other tests
+    await Post.findByIdAndUpdate(post2Id, { createdAt: updatedData.createdAt });
   });
 
   it("getPostById: Should return the post if it exists", async () => {
@@ -732,7 +789,7 @@ describe("Post service unit tests", () => {
     expect(titles).to.deep.include("First Multiple Post");
     expect(titles).to.deep.include("New Test Post");
     expect(titles).to.deep.include("Third Test Post");
-    expect(titles).to.deep.include("Updated Third Post Title");
+    expect(titles).to.deep.include("Updated Second Post Title");
     expect(titles).to.deep.include("Test post title");
   });
 
@@ -740,20 +797,15 @@ describe("Post service unit tests", () => {
     const posts = await getAllPostsByUserIdNoLimitation(user1Id.toString());
 
     // Verify posts are in descending order by date
-    // for (let i = 0; i < posts.length - 1; i++) {
-    //   const date1 = posts[i].createdAt;
-    //   const date2 = posts[i + 1].createdAt;
+    for (let i = 0; i < posts.length - 1; i++) {
+      const date1 = posts[i].createdAt;
+      const date2 = posts[i + 1].createdAt;
 
-    //   console.log(date1);
-    //   console.log(typeof date1);
-    //   console.log(date2);
-    //   console.log(typeof date2);
+      const date1Parsed = dateParsingHelper(date1);
+      const date2Parsed = dateParsingHelper(date2);
 
-    //   const date1Parsed = dateParsingHelper(date1);
-    //   const date2Parsed = dateParsingHelper(date2);
-
-    //   expect(date1Parsed.getTime()).to.be.greaterThan(date2Parsed.getTime());
-    // }
+      expect(date1Parsed.getTime()).to.be.greaterThan(date2Parsed.getTime());
+    }
 
     // Also verify that dates are formatted as strings
     posts.forEach((post) => {
@@ -1016,12 +1068,31 @@ describe("Post service unit tests", () => {
 });
 
 function dateParsingHelper(date) {
-  const [first, second] = date.split(",").map((item) => item.trim());
-  const [day, month, year] = first.split(".");
-  const [hours, minutes, seconds] = second.split(":");
+  console.log(date);
+  const formats = [
+    { locale: "en-US", format: "M/d/yyyy, h:mm:ss a" }, // 4/5/2025, 3:24:12 PM
+    { locale: "en-GB", format: "dd/MM/yyyy, HH:mm:ss" }, // 05/04/2025, 15:24:12
+    { locale: "bg-BG", format: "d.MM.yyyy г., HH:mm:ss ч." }, // 5.4.2025 г., 15:24:12
+    { locale: "el-GR", format: "d/M/yyyy, H:mm:ss" }, // 5/4/2025, 15:24:12
+    { locale: "fr-FR", format: "dd/MM/yyyy HH:mm:ss" }, // 05/04/2025 15:24:12
+    { locale: "de-DE", format: "dd.MM.yyyy, HH:mm:ss" }, // 05.04.2025, 15:24:12
+    { locale: "es-ES", format: "dd/MM/yyyy HH:mm:ss" }, // 05/04/2025 15:24:12
+    { locale: "it-IT", format: "dd/MM/yyyy HH:mm:ss" }, // 05/04/2025 15:24:12
+    { locale: "ru-RU", format: "dd.MM.yyyy, HH:mm:ss" }, // 05.04.2025, 15:24:12
+    { locale: "zh-CN", format: "yyyy/M/d, HH:mm:ss" }, // 2025/4/5, 15:24:12
+    { locale: "ja-JP", format: "yyyy/MM/dd HH:mm:ss" }, // 2025/04/05 15:24:12
+    { locale: "ko-KR", format: "yyyy. M. d. a h:mm:ss" }, // 2025. 4. 5. 오후 3:24:12
+    { locale: "en-CA", format: "yyyy-MM-dd, h:mm:ss a" }, // 2025-04-05, 3:24:12 PM
+    { locale: "en-AU", format: "d/MM/yyyy, h:mm:ss a" }, // 5/04/2025, 3:24:12 PM
+    { locale: "pt-BR", format: "dd/MM/yyyy HH:mm:ss" }, // 05/04/2025 15:24:12
+    // …add more as you need…
+  ];
 
-  const newDate = new Date(year, month - 1, day, hours, minutes, seconds);
-  console.log(newDate);
+  for (const { format, locale } of formats) {
+    const dateParsed = parse(date, format, new Date(), { locale: locale });
 
-  return newDate;
+    if (!isNaN(dateParsed)) {
+      return dateParsed;
+    }
+  }
 }
