@@ -732,10 +732,13 @@ describe("Post service unit tests", () => {
     const posts = await getAllPostsByUserIdNoLimitation(user1Id.toString());
 
     // ------- This will work if i use .toISOString() in service -------
-    // // Verify posts are in descending order by date
+    // Verify posts are in descending order by date
     // for (let i = 0; i < posts.length - 1; i++) {
     //   const currentDate = new Date(posts[i].createdAt);
-    //   const nextDate = new Date(posts[i + 1].createdAt);
+    //   const nextDate = Date.parse(posts[i + 1].createdAt);
+
+    //   console.log(typeof currentDate);
+    //   console.log(currentDate);
 
     //   expect(currentDate.getTime()).to.be.greaterThan(nextDate.getTime());
     // }
