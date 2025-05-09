@@ -20,6 +20,16 @@
     <script src="https://unpkg.com/jodit@4.0.1/es2021/jodit.min.js"></script>
   </head>
   <body>
+    {{!-- Back to top button --}}
+    {{!-- <a href="#">
+      <div id="btn-back-to-top">
+        <i class="fa-solid fa-arrow-up"></i>
+      </div>
+    </a> --}}
+    <button type="button" id="btn-back-to-top" class="btn btn-success btn-floating btn-lg">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
     <div class="d-flex flex-column min-vh-100">
       <header>
         {{> nav}}
@@ -68,13 +78,42 @@
     </div>
   </body>
     <script>
+      //{{!-- Toast Messages --}}
       document.addEventListener("DOMContentLoaded", function () {
         let toastElements = document.querySelectorAll(".toast");
         toastElements.forEach((toastEl) => {
           new bootstrap.Toast(toastEl).show();
         });
       });
+
+      //Back To Top Buttton
+      document.addEventListener('DOMContentLoaded', () => {
+        const backToTopButton = document.getElementById('btn-back-to-top')
+
+        console.log('backToTopButton is', backToTopButton);
+
+        window.addEventListener('scroll', scrollFunction);
+
+        function scrollFunction() {
+          console.log('scroll y =', document.documentElement.scrollTop);
+          if (
+            window.scrollY > 20
+          ) {
+            backToTopButton.style.display = "block";
+          } else {
+            backToTopButton.style.display = "none";
+          }
+        }
+        // When the user clicks on the button, scroll to the top of the document
+        backToTopButton.addEventListener("click", backToTop);
+
+        function backToTop() {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        }
+      })
       
+      //{{!-- Jodit editor --}}
       const editor = Jodit.make("#editor", {
         readonly: false,
         height: 400,
