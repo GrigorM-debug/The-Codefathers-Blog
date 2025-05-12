@@ -112,6 +112,46 @@
           document.documentElement.scrollTop = 0;
         }
       })
+
+      //Ai chat bot
+      // Check if chatbase is not already initialized
+      if (!window.chatbase || window.chatbase("getState") !== "initialized") {
+        // Create a proxy function to queue chatbase calls
+        window.chatbase = (...args) => {
+          if (!window.chatbase.q) {
+            window.chatbase.q = [];
+          }
+          window.chatbase.q.push(args);
+        };
+
+        // Wrap it in a Proxy to intercept property access
+        window.chatbase = new Proxy(window.chatbase, {
+          get(target, prop) {
+            if (prop === "q") {
+              return target.q;
+            }
+            return (...args) => target(prop, ...args);
+          }
+        });
+      }
+
+      // Load the Chatbase script when the page is ready
+      const onLoad = () => {
+        const script = document.createElement("script");
+        script.src = "{{CHATBASE_SRC}}";
+        script.id = "{{CHATBASE_ID}}";
+        
+        script.domain = "{{CHATBASE_DOMAIN}}";
+        document.body.appendChild(script);
+      };
+
+      // Wait for the page to be fully loaded
+      if (document.readyState === "complete") {
+        onLoad();
+      } else {
+        window.addEventListener("load", onLoad);
+      }
+      //Ai chat bot end
       
       //{{!-- Jodit editor --}}
       const editor = Jodit.make("#editor", {
