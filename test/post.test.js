@@ -23,6 +23,7 @@ import {
   updateLikesCollectionInPostSchemaWhenDislikingPost,
   // eslint-disable-next-line no-unused-vars
   updateLikesCollectionInPostSchemaWhenLikingPost,
+  getLatest3Posts,
 } from "../src/services/post.js";
 import {
   createComment,
@@ -1054,6 +1055,78 @@ describe("Post service unit tests", () => {
     // Verify we get an empty array
     expect(followingsPosts).to.be.an("array");
     expect(followingsPosts).to.be.empty;
+  });
+
+  it("getLatest3Posts: should return the last 3 added posts", async () => {
+    const latest3Posts = await getLatest3Posts();
+
+    expect(latest3Posts).to.be.an("array");
+    expect(latest3Posts).to.not.be.empty;
+    expect(latest3Posts).to.have.lengthOf(3);
+
+    expect(latest3Posts[0])
+      .to.has.property("title")
+      .that.is.equal("Updated Second Post Title");
+
+    expect(latest3Posts[1])
+      .to.has.property("title")
+      .that.is.equal("Complete Post");
+
+    expect(latest3Posts[2])
+      .to.has.property("title")
+      .that.is.equal("Test Timestamp");
+
+    expect(latest3Posts[0])
+      .to.has.property("bannnerImageUrl")
+      .that.is.equal("https://example.com/updated-image3.jpg");
+
+    expect(latest3Posts[1])
+      .to.has.property("bannnerImageUrl")
+      .that.is.equal("https://example.com/required.jpg");
+
+    expect(latest3Posts[2])
+      .to.has.property("bannnerImageUrl")
+      .that.is.equal("https://example.com/timestamp.jpg");
+
+    expect(latest3Posts[0].author)
+      .to.has.property("username")
+      .that.is.equal("Ivan6740");
+
+    expect(latest3Posts[1].author)
+      .to.has.property("username")
+      .that.is.equal("Ivan6740");
+
+    expect(latest3Posts[2].author)
+      .to.has.property("username")
+      .that.is.equal("Ivan6740");
+  });
+
+  it("getLatest3Posts: should return the last 3 added posts in decending order", async () => {
+    const latest3Posts = await getLatest3Posts();
+
+    for (let i = 0; i < latest3Posts.length - 1; i++) {
+      const date1 = latest3Posts[i].createdAt;
+      const date2 = latest3Posts[i + 1].createdAt;
+
+      const date1Parsed = dateParsingHelper(date1);
+      const date2Parsed = dateParsingHelper(date2);
+
+      expect(date1Parsed.getTime()).to.be.greaterThan(date2Parsed.getTime());
+    }
+
+    // Also verify that dates are formatted as strings
+    latest3Posts.forEach((post) => {
+      expect(post).to.have.property("createdAt");
+    });
+  });
+
+  it("getLatest3Posts: should return empty array if there are no posts", async () => {
+    await Post.deleteMany({});
+
+    const latest3Posts = await getLatest3Posts();
+
+    expect(latest3Posts).to.be.an("array");
+    expect(latest3Posts).to.be.empty;
   });
 
   it("getAllPosts: should return empty array when no posts exist", async () => {

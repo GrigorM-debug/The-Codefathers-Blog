@@ -183,3 +183,18 @@ export async function getFollowingsPosts(followingsIdArr) {
 
   return followingsPosts;
 }
+
+export async function getLatest3Posts() {
+  const posts = await Post.find()
+    .sort({ createdAt: "descending" })
+    .select("title createdAt bannnerImageUrl")
+    .populate({ path: "author", select: "username" })
+    .limit(3)
+    .lean();
+
+  posts.forEach((p) => {
+    p.createdAt = p.createdAt.toLocaleString();
+  });
+
+  return posts;
+}

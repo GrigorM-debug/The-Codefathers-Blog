@@ -1,0 +1,38 @@
+<div class="container mt-6">
+  <div class="d-flex justify-content-between">
+    <div class="text-center mb-2-8 mb-lg-6">
+      <h2 class="display-18 display-md-16 display-lg-14 font-weight-700">Latest
+        <strong class="text font-weight-700">Posts</strong></h2>
+    </div>
+    <a href="/posts" class="btn btn-lg btn-success mb-4">
+      See All Posts
+    </a>
+  </div>
+  <div class="row">
+    {{#each latest3Posts}}
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <img
+            src="{{this.bannnerImageUrl}}"
+            class="card-img-top"
+            alt="{{this.title}}"
+          />
+          <div class="card-body">
+            <h5><a
+                class="link-offset-2 link-underline link-underline-opacity-0 text-success text-center"
+                href="/post/details/{{this._id}}"
+              >
+                {{this.title}}
+              </a></h5>
+            <div class="d-flex flex-row justify-content-between">
+              <h6 class="text-wrap"><strong>Author:
+                </strong>{{this.author.username}}</h6>
+              <h6 class="text-wrap"><strong>Created At:
+                </strong>{{this.createdAt}}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
