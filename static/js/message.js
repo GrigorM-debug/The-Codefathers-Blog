@@ -1,7 +1,9 @@
 //Logic for handeling messages
 import { io } from "socket.io-client";
+// import { io } from "https://cdn.socket.io/4.8.1/socket.io.esm.min.js";
 
-const socketClient = io();
+// const socketClient = io();
+const socketClient = io("http://localhost:3000/");
 
 const inputTextElement = document.getElementById("chat-text");
 const sendButtonElement = document.getElementById("send-button");
@@ -19,18 +21,18 @@ function handleSendMessage() {
 
   if (text && roomId) {
     // Send message to server
-    fetch("/message", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        senderId: socketClient.id,
-        roomId: roomId,
-        username: document.querySelector("[data-username]").dataset.username,
-        text: text,
-      }),
-    });
+    // fetch("/message", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     senderId: socketClient.id,
+    //     roomId: roomId,
+    //     username: document.querySelector("[data-username]").dataset.username,
+    //     text: text,
+    //   }),
+    // });
 
     // Emit socket event
     socketClient.emit("message", { roomId, text });

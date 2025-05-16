@@ -39,7 +39,7 @@ export async function handleSocketConnection(io) {
         const message = await createMessage(roomId, user._id, text);
 
         // Emit the message to all clients in the room
-        io.to(roomId).emit("message", {
+        io.to(roomId).broadcast.emit("message", {
           message: {
             ...message,
             sender: {
