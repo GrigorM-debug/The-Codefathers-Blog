@@ -8,7 +8,11 @@ import {
   roomExistByName,
 } from "../services/room.js";
 import { createMessage, getMessagesByRoomId } from "../services/message.js";
-import { getAllRooms, createRoom } from "../services/room.js";
+import {
+  getAllRooms,
+  createRoom,
+  checkIfUserAlreadyInRoom,
+} from "../services/room.js";
 import { roomValidations } from "../express-validator/room.js";
 
 import { csrfSync } from "csrf-sync";
@@ -32,7 +36,7 @@ roomRouter.get("/rooms", isAuthenticated(), async (req, res, next) => {
     const errors = req.session.errors || [];
     delete req.session.errors;
 
-    const success = req.session.successMessage || {};
+    const success = req.session.successMessage || null;
     delete req.session.successMessage;
 
     const rooms = await getAllRooms();
@@ -62,7 +66,14 @@ roomRouter.post("/join/:roomId", isAuthenticated(), async (req, res, next) => {
       });
     }
 
+    const isUserInRoom = await checkIfUserAlreadyInRoom(roomId, userId);
+
     // await updateUserSocketId(username, socketId);
+
+    if (isUserInRoom) {
+      return res.redirect(`/messages/${roomId}`);
+    }
+
     await addUserToRoom(roomId, userId);
 
     req.session.successMessage = {
@@ -83,6 +94,7 @@ roomRouter.get(
   isAuthenticated(),
   async (req, res, next) => {
     const { roomId } = req.params;
+    const user = req.user;
 
     try {
       const isRoomExisting = await roomExistById(roomId);
@@ -107,6 +119,11 @@ roomRouter.get(
         messages,
         roomName,
         roomId,
+        user: {
+          _id: user._id,
+          username: user.username,
+          imageUrl: user.imageUrl,
+        },
       });
     } catch (err) {
       next(err);
@@ -124,14 +141,14 @@ roomRouter.post("/message", isAuthenticated(), async (req, res, next) => {
 
   try {
     const message = await createMessage(roomId, senderId, username, text);
-    res.status(201).json({ message: "Message sent", data: message });
+    res.status(201).json({ success: true, message });
   } catch (err) {
     next(err);
   }
 });
 
 //Create room get. Shows the create room form
-roomRouter.get("/create_room", isAuthenticated(), async (req, res, next) => {
+roomRouter.get("/create_room", isAuthenticated(), async (req, res) => {
   //generate csrf token
   const csrfToken = generateToken(req, true);
   //render the view

@@ -190,3 +190,7 @@ export async function updateUserSocketId(username, socketId) {
 
   await user.save();
 }
+
+export async function getUserBySocketId(socketId) {
+  return await User.findOne({ socketId });
+}

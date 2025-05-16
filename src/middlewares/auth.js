@@ -19,6 +19,7 @@ export default function auth() {
       next();
     } catch (error) {
       res.clearCookie("token");
+      console.log(error.message);
       return res.redirect("/login");
     }
   };

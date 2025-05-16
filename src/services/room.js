@@ -17,6 +17,19 @@ export async function addUserToRoom(roomId, userId) {
   }
 }
 
+export async function checkIfUserAlreadyInRoom(roomId, userId) {
+  const room = await Room.findById(roomId);
+  if (room) {
+    const IsUserInRoom = await room.participants.includes(userId);
+
+    if (IsUserInRoom) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
 export async function roomExistById(roomId) {
   const room = await Room.findById(roomId);
 

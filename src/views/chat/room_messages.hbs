@@ -9,6 +9,13 @@
                 <div class="chat-about">
                   <h2 class="m-b-0">Room: {{this.roomName}}</h2>
                   <p id="room-id" hidden>{{this.roomId}}</p>
+                  <p
+                    id="current_user"
+                    data-user-id="{{user._id}}"
+                    data-username="{{user.username}}"
+                    data-image="{{user.imageUrl}}"
+                    hidden
+                  ></p>
                 </div>
               </div>
               <div class="col-lg-6 hidden-sm text-right">
@@ -21,12 +28,12 @@
             <ul class="m-b-0">
               {{#each this.messages}}
                 <li class="clearfix">
-                  <div class="message-data text-right">
+                  <div class="message-data {{#if (eq sender._id user._id)}}text-right{{/if}}">
                     <span class="message-data-time">{{this.createdAt}}</span>
                     <p>{{this.sender.username}}</p>
                     <img src={{this.sender.imageUrl}} alt="avatar" />
                   </div>
-                  <div class="message other-message float-right">
+                  <div class="message {{#if (eq sender._id user._id)}}float-right{{else}}other-message{{/if}}">
                     {{this.text}}
                   </div>
                 </li>
