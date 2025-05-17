@@ -3,18 +3,18 @@ import express from "express";
 import auth from "../src/middlewares/auth.js";
 import errorHandler from "../src/middlewares/errorHandler.js";
 import session from "express-session";
-import { handleSocketConnection } from "../src/controllers/socket.js";
-import { createServer } from "http";
-import { Server } from "socket.io";
+// import { handleSocketConnection } from "../src/controllers/socket.js";
+// import { createServer } from "http";
+// import { Server } from "socket.io";
 
 export default function expressConfig(app) {
-  const httpServer = createServer(app);
-  const io = new Server(httpServer, {
-    cors: {
-      origin: "*",
-    },
-  });
-  handleSocketConnection(io);
+  // const httpServer = createServer();
+  // const io = new Server(httpServer, {
+  //   cors: {
+  //     origin: "*",
+  //   },
+  // });
+  // handleSocketConnection(io);
   const secret = "Cookie parser secret";
 
   app.use(express.json());

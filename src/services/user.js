@@ -183,8 +183,8 @@ export async function updateUser(userId, userData) {
 }
 
 //Used by the chat system
-export async function updateUserSocketId(username, socketId) {
-  const user = await User.findOne({ username: username });
+export async function updateUserSocketId(userId, socketId) {
+  const user = await User.findOne({ _id: userId });
 
   user.socketId = socketId;
 
@@ -192,5 +192,5 @@ export async function updateUserSocketId(username, socketId) {
 }
 
 export async function getUserBySocketId(socketId) {
-  return await User.findOne({ socketId });
+  return await User.findOne({ socketId }).lean();
 }

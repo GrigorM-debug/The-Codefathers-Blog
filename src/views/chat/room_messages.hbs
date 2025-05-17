@@ -4,7 +4,7 @@
       <div class="card chat-app">
         <div class="chat">
           <div class="chat-header clearfix">
-            <div class="row">
+            <div class="d-flex justify-content-start">
               <div class="col-lg-6">
                 <div class="chat-about">
                   <h2 class="m-b-0">Room: {{this.roomName}}</h2>
@@ -18,9 +18,8 @@
                   ></p>
                 </div>
               </div>
-              <div class="col-lg-6 hidden-sm text-right">
-                <a href="/rooms" class="btn btn-success">Back</a>
-
+              <div class="col-lg-6 hidden-sm text-right justify-content-end">
+                <a id="leave-room" href="/rooms" class="btn btn-success">Back</a>
               </div>
             </div>
           </div>
@@ -41,19 +40,24 @@
             </ul>
           </div>
           <div class="chat-message clearfix">
-            <div class="input-group mb-0">
-              <input
-                id="chat-text"
-                type="text"
-                class="form-control"
-                placeholder="Enter text here..."
-              />
-              <div class="input-group-prepend">
-                <button id="send-button" class="input-group-text"><i
-                    class="fa-solid fa-paper-plane"
-                  ></i></button>
+            <p class="activity"></p>
+            <p class="room-joined"></p>
+            <form class="form-msg">
+              <div class="input-group mb-0">
+                <input
+                  id="chat-text"
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter text here..."
+                />
+                <div class="input-group-prepend">
+                  <button id="send-button" class="input-group-text"><i
+                      class="fa-solid fa-paper-plane"
+                      type="submit"
+                    ></i></button>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

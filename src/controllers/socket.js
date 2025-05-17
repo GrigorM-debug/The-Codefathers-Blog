@@ -1,33 +1,48 @@
-import { getUserBySocketId, updateUserSocketId } from "../services/user.js";
+import {
+  getUserBySocketId,
+  updateUserSocketId,
+  userExixtsById,
+} from "../services/user.js";
 import { createMessage } from "../services/message.js";
-import { userExistByUsername } from "../services/user.js";
+import { checkIfUserAlreadyInRoom } from "../services/room.js";
 
 export async function handleSocketConnection(io) {
   io.on("connection", (socket) => {
-    console.log(`User connected: ${socket.id}`);
-
     //This is listening for join event trigger for joining rooms
-    socket.on("join", async ({ username, roomId }) => {
-      console.log("Join event received");
-
+    socket.on("join", async ({ userId, roomId }) => {
       const socketId = socket.id;
 
-      console.log(socketId);
+      try {
+        //leave previous room
+        const alreadyInRoom = await checkIfUserAlreadyInRoom(roomId, userId);
+        if (alreadyInRoom) {
+          socket.leave(roomId);
+          console.log(`User ${userId} left room: ${roomId}`);
+        }
 
-      console.log(roomId);
-      console.log(username);
-      const isUserExisting = await userExistByUsername(username);
+        const isUserExisting = await userExixtsById(userId);
 
-      if (isUserExisting) {
-        await updateUserSocketId(username, socketId);
-        socket.join(roomId);
-        console.log(`${username} joined room: ${roomId}`);
+        if (isUserExisting) {
+          await updateUserSocketId(userId, socketId);
+          socket.join(roomId);
 
-        //Emit event back to the client
-        socket.emit("roomJoined", { roomId });
+          const user = await getUserBySocketId(socketId);
+
+          //Emit event back to the all room members
+          io.to(roomId).broadcast.emit(
+            "roomJoined",
+            `${user.username} has joined the chat!`
+          );
+
+          //Upon connection - only to user
+          socket.emit("roomJoined", "Welcome to the chat!");
+        }
+      } catch (err) {
+        console.error("Error joining room: ", err);
       }
     });
 
+    //Listening for message event
     socket.on("message", async ({ roomId, text }) => {
       try {
         const user = await getUserBySocketId(socket.id);
@@ -37,6 +52,8 @@ export async function handleSocketConnection(io) {
         }
 
         const message = await createMessage(roomId, user._id, text);
+
+        console.log("Message created: ", message);
 
         // Emit the message to all clients in the room
         io.to(roomId).broadcast.emit("message", {
@@ -54,8 +71,16 @@ export async function handleSocketConnection(io) {
       }
     });
 
-    socket.on("disconnect", async () => {
-      console.log(`User disconnected: ${socket.id}`);
+    //When user disconnects - to all other users
+    socket.on("disconnect", (roomId, username) => {
+      io.to(roomId).broadcast.emit("message", `${username} has left the chat!`);
+
+      socket.leave(roomId);
+    });
+
+    //Listening for activity event
+    socket.on("activity", (roomId, username) => {
+      io.to(roomId).broadcast.emit("activity", username);
     });
   });
 }

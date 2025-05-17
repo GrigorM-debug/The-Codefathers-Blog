@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 
 const socketClient = io();
 
-const username = document.getElementById("username").textContent;
+const userId = document.getElementById("user_id").textContent;
 
 const roomElements = document.querySelectorAll("#room");
 
@@ -15,18 +15,14 @@ roomElements.forEach((roomElement) => {
 });
 
 function handleRoomJoin(e) {
+  e.preventDefault();
   const roomId = e.target.getAttribute("room-Id");
-  console.log(`User username: ${username}`);
+  console.log(`User username: ${userId}`);
   console.log(`Room id: ${roomId}`);
 
   //Add logic for joining rooms
-  if (username && roomId) {
+  if (userId && roomId) {
     console.log("Emitting join event");
-    socketClient.emit("join", { username, roomId });
+    socketClient.emit("join", { userId, roomId });
   }
 }
-
-socketClient.on("roomJoined", (roomId) => {
-  console.log(`Joined room: ${roomId}`);
-  window.location.href = `/messages/${roomId}`;
-});

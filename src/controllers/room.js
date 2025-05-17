@@ -31,7 +31,7 @@ const roomRouter = Router();
 
 //Get rooms
 roomRouter.get("/rooms", isAuthenticated(), async (req, res, next) => {
-  const username = req?.user?.username;
+  const userId = req?.user?._id;
   try {
     const errors = req.session.errors || [];
     delete req.session.errors;
@@ -40,7 +40,7 @@ roomRouter.get("/rooms", isAuthenticated(), async (req, res, next) => {
     delete req.session.successMessage;
 
     const rooms = await getAllRooms();
-    res.render("chat/room_select", { rooms, username, errors, success });
+    res.render("chat/room_select", { rooms, userId, errors, success });
   } catch (err) {
     next(err);
   }
