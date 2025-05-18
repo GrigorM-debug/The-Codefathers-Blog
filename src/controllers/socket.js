@@ -3,7 +3,7 @@ import {
   updateUserSocketId,
   userExixtsById,
 } from "../services/user.js";
-import { createMessage } from "../services/message.js";
+import { createMessage, getMessagesByRoomId } from "../services/message.js";
 import { checkIfUserAlreadyInRoom } from "../services/room.js";
 
 export async function handleSocketConnection(io) {
@@ -72,15 +72,26 @@ export async function handleSocketConnection(io) {
     });
 
     //When user disconnects - to all other users
-    socket.on("disconnect", (roomId, username) => {
-      io.to(roomId).broadcast.emit("message", `${username} has left the chat!`);
-
+    socket.on("leave", ({ roomId, username }) => {
       socket.leave(roomId);
+      io.to(roomId).broadcast.emit("message", {
+        text: `${username} has left the chat!`,
+        system: true,
+      });
     });
 
     //Listening for activity event
-    socket.on("activity", (roomId, username) => {
+    socket.on("activity", ({ roomId, username }) => {
       io.to(roomId).broadcast.emit("activity", username);
+    });
+
+    socket.on("getHistory", async ({ roomId }) => {
+      try {
+        const messages = await getMessagesByRoomId(roomId);
+        socket.emit("history", messages);
+      } catch (err) {
+        console.error("Failed to load history:", err);
+      }
     });
   });
 }

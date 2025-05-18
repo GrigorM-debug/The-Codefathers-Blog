@@ -1,5 +1,7 @@
 import { io } from "socket.io-client";
 
+console.log("Socket client initialized");
+
 const socketClient = io();
 
 const userId = document.getElementById("user_id").textContent;

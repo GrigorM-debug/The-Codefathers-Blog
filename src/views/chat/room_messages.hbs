@@ -19,13 +19,17 @@
                 </div>
               </div>
               <div class="col-lg-6 hidden-sm text-right justify-content-end">
-                <a id="leave-room" href="/rooms" class="btn btn-success">Back</a>
+                <a
+                  id="leave-room"
+                  href="/rooms"
+                  class="btn btn-success"
+                >Back</a>
               </div>
             </div>
           </div>
           <div class="chat-history">
             <ul class="m-b-0">
-              {{#each this.messages}}
+              {{!-- {{#each this.messages}}
                 <li class="clearfix">
                   <div class="message-data {{#if (eq sender._id user._id)}}text-right{{/if}}">
                     <span class="message-data-time">{{this.createdAt}}</span>
@@ -36,7 +40,7 @@
                     {{this.text}}
                   </div>
                 </li>
-              {{/each}}
+              {{/each}} --}}
             </ul>
           </div>
           <div class="chat-message clearfix">
@@ -66,4 +70,4 @@
 </div>
 <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
 
-<script src="/js/message.js" type="/module"></script>
+<script src="./js/message.js"></script>

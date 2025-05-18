@@ -1,7 +1,14 @@
-//Logic for handeling messages
 import { io } from "socket.io-client";
 
-const socketClient = io("ws://localhost:3000");
+console.log("Socket client initialized");
+
+const socketClient = io();
+
+socketClient.on("connect", () => {
+  const userId = userElement.getAttribute("data-user-id");
+  socketClient.emit("join", { userId, roomId });
+  socketClient.emit("getHistory", { roomId });
+});
 
 const roomJoinedElement = document.getElementById("room-joined");
 
@@ -23,6 +30,8 @@ const messageFormElement = document.querySelector(".form-msg");
 const userElement = document.getElementById("current_user");
 
 const username = userElement.getAttribute("data-username");
+
+const ul = document.querySelector(".chat-history ul");
 
 function handleSendMessage(e) {
   e.preventDefault();
@@ -73,7 +82,7 @@ function createMessageElement(message) {
   //Create message data and time span
   const dataAndTimeSpan = document.createElement("span");
   dataAndTimeSpan.className = "message-data-time";
-  dataAndTimeSpan.textContent = message.createdAt;
+  dataAndTimeSpan.textContent = message.message.createdAt;
   messageDataDiv.appendChild(dataAndTimeSpan);
 
   //Create sender username paragraph
@@ -100,7 +109,9 @@ function createMessageElement(message) {
 
 //Listen for message activity event triggered from the server
 socketClient.on("message", (message) => {
-  createMessageElement(message);
+  const liMessageElement = createMessageElement(message);
+  ul.appendChild(liMessageElement);
+  ul.scrollTop = ul.scrollHeight;
 });
 
 //Listen for activity (when user is typing) event triggered from the server
@@ -118,5 +129,26 @@ socketClient.on("activity", (username) => {
 const leaveRoomButton = document.getElementById("leave-room");
 
 leaveRoomButton.addEventListener("click", () => {
-  socketClient.emit("disconnect", { roomId, username });
+  socketClient.emit("leave", { roomId, username });
+});
+
+socketClient.on("history", (messages) => {
+  ul.innerHTML = ""; // Clear the chat history
+  messages.forEach((msg) => {
+    // ensure shape matches createMessageElement
+    const formatted = {
+      sender: {
+        username: msg.sender.username,
+        imageUrl: msg.sender.imageUrl,
+        _id: msg.sender._id,
+      },
+      text: msg.text,
+      createdAt: msg.createdAt,
+    };
+    const li = createMessageElement(formatted);
+    ul.appendChild(li);
+  });
+
+  // scroll to bottom
+  ul.scrollTop = ul.scrollHeight;
 });
